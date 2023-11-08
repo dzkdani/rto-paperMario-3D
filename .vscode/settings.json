@@ -52,5 +52,5 @@
         "Temp/": true
     },
     "dotnet.preferCSharpExtension": true,
-    "dotnet.defaultSolution": "PaperMario-3D.sln"
+    "dotnet.defaultSolution": "rto-paperMario-3D.sln"
 }
