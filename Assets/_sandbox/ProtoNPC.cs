@@ -43,6 +43,8 @@ public class ProtoNPC : MonoBehaviour
     }
 
     private void Update() {
+        
+        transform.rotation = Quaternion.Euler(Vector3.zero);
     
         if (Type == NPCType.idle)
             return;

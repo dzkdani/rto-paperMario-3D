@@ -67,10 +67,9 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!CanMove)
-            return;
         Vector3 move = transform.position + (speed * Time.deltaTime * new Vector3(horizontalMove, 0, verticalMove));
-        transform.position = Vector3.SmoothDamp(transform.position, move, ref currentVelocity, smooth);
+        if (CanMove)
+            transform.position = Vector3.SmoothDamp(transform.position, move, ref currentVelocity, smooth);
     }
 
     private void GetInput()
