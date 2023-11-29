@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private float horizontalMove;
     private float verticalMove;
     private Vector3 currentVelocity;
+    private bool isRotate;
     public IInteractable Interactable { get; set; }
 
     void Awake()
@@ -53,6 +54,7 @@ public class PlayerController : MonoBehaviour
         //player init state
         CanMove = true;
         CanInteract = true;
+        isRotate = false;
         currentDirection = PlayerDirection.left;
     }
 
@@ -88,7 +90,9 @@ public class PlayerController : MonoBehaviour
     #region Movement
     private void RotateSprite()
     {
-        transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), flipDuration).From(transform.rotation.eulerAngles).SetEase(flipEase);
+        isRotate = true;
+        transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), flipDuration).From(transform.rotation.eulerAngles).SetEase(flipEase)
+            .OnComplete(()=> {isRotate = false;});
     }
 
     private void SetSprite()
@@ -113,6 +117,9 @@ public class PlayerController : MonoBehaviour
 
     private void SpriteRotation()
     {
+        if (isRotate)
+            return;
+
         if (Input.GetKeyDown(KeyCode.A))
         {
             //left dir
