@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 
 public enum PlayerDirection
 {
@@ -37,16 +35,17 @@ public class PlayerController : MonoBehaviour
     private float horizontalMove;
     private float verticalMove;
     private Vector3 currentVelocity;
-    public IInteractable Interactable {get; set;}
+    public IInteractable Interactable { get; set; }
 
-    void Awake() {
+    void Awake()
+    {
         rb = GetComponent<Rigidbody>();
         anim = sprite.GetComponent<Animator>();
     }
 
     void Start()
     {
-        InitPlayer();        
+        InitPlayer();
     }
 
     private void InitPlayer()
@@ -64,23 +63,29 @@ public class PlayerController : MonoBehaviour
         NotifRotation();
     }
 
-    void FixedUpdate() {
+    void FixedUpdate()
+    {
         if (!CanMove)
             return;
         Vector3 move = transform.position + (speed * Time.deltaTime * new Vector3(horizontalMove, 0, verticalMove));
-        transform.position = Vector3.SmoothDamp(transform.position, move, ref currentVelocity, smooth); 
+        transform.position = Vector3.SmoothDamp(transform.position, move, ref currentVelocity, smooth);
     }
 
     private void GetInput()
-    { 
+    {
         horizontalMove = Input.GetAxis("Horizontal");
         verticalMove = Input.GetAxis("Vertical");
-        
+
         if (Input.GetKeyDown(KeyCode.F) && CanInteract)
             Interact();
     }
 
-#region Movement
+    public void SetPlayerPos(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+    public Vector3 GetPlayerPos() => transform.position;
+    #region Movement
     private void RotateSprite()
     {
         transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), flipDuration).From(transform.rotation.eulerAngles).SetEase(flipEase);
@@ -113,7 +118,7 @@ public class PlayerController : MonoBehaviour
             //left dir
             if (currentDirection == PlayerDirection.left)
                 return;
-            else 
+            else
             {
                 currentDirection = PlayerDirection.left;
                 RotateSprite();
@@ -131,14 +136,14 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-#endregion
+    #endregion
 
-#region Interaction
+    #region Interaction
 
     private void NotifRotation()
     {
         if (notifMark.activeInHierarchy)
-            notifMark.transform.Rotate(0,1,0);    
+            notifMark.transform.Rotate(0, 1, 0);
     }
 
     private void Interact()
@@ -156,7 +161,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other) 
+    private void OnTriggerExit(Collider other)
     {
         if (other.TryGetComponent<Interactable>(out Interactable obj))
         {
@@ -165,6 +170,6 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Player out radius of interactable");
         }
     }
-#endregion
+    #endregion
 
 }
