@@ -10,6 +10,8 @@ public enum NPCType
 
 public class ProtoNPC : MonoBehaviour
 {
+    [SerializeField] private GameObject sprite;
+
     //General
     public NPCType Type;
  

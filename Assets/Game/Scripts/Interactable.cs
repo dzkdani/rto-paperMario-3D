@@ -24,6 +24,7 @@ public class Interactable : MonoBehaviour, IInteractable
         switch (Type)
         {
             case InteractType.dialogue:
+                Test4();
                 if (GameplayManager.instance.dialogueUI != null)
                     GameplayManager.instance.dialogueUI.InitDialogue(dialogueObj);
                 break;
@@ -56,6 +57,15 @@ public class Interactable : MonoBehaviour, IInteractable
     private void Test3()
     {
         Debug.Log("other interaction");
+    }
+
+    private void Test4()
+    {
+        Debug.Log("npc interaction");
+        if (transform.GetChild(0).TryGetComponent<SpriteRenderer>(out SpriteRenderer npc))
+        {
+            npc.flipX = true;
+        }
     }
 
     public void SetLastPosition(Vector3 posTarget)
