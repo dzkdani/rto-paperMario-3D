@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using TOI2D;
 using UnityEngine;
 
@@ -62,9 +63,10 @@ public class Interactable : MonoBehaviour, IInteractable
     private void Test4()
     {
         Debug.Log("npc interaction");
-        if (transform.GetChild(0).TryGetComponent<SpriteRenderer>(out SpriteRenderer npc))
+        if (transform.GetChild(0).TryGetComponent<ProtoNPCAnim>(out ProtoNPCAnim npc))
         {
-            npc.flipX = true;
+            npc.transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), 0.25f).From(transform.rotation.eulerAngles).SetEase(Ease.InQuad)
+                .OnComplete(()=> {npc.GetComponent<SpriteRenderer>().flipX = true;});
         }
     }
 
