@@ -7,10 +7,12 @@ public class Interactable : MonoBehaviour, IInteractable
     [SerializeField] private InteractType Type;
 
     public static event Action OnInteract;
+    [SerializeField] private Dialogue dialogueObj;
     [SerializeField] private Transform teleportPos;
     public Vector3 lastpos;
     public TeleportTarget teleportTarget;
     private GameplayManager gameplayManager;
+
     private void Start()
     {
         //InitInteractable();
@@ -22,7 +24,8 @@ public class Interactable : MonoBehaviour, IInteractable
         switch (Type)
         {
             case InteractType.dialogue:
-                OnInteract = Test1;
+                if (GameplayManager.instance.dialogueUI != null)
+                    GameplayManager.instance.dialogueUI.InitDialogue(dialogueObj);
                 break;
             case InteractType.teleport:
                 if (GameplayManager.instance.teleportSystem != null)

@@ -6,6 +6,7 @@ public class GameplayManager : MonoBehaviour
     public static GameplayManager instance;
     public PlayerController player;
     public TeleportSystem teleportSystem;
+    public DialogueUI dialogueUI;
 
     private void Awake()
     {
@@ -17,11 +18,12 @@ public class GameplayManager : MonoBehaviour
         {
             instance = this;
         }
+
+        player = FindObjectOfType<PlayerController>();
     }
     // Start is called before the first frame update
     void Start()
     {
-        player = FindObjectOfType<PlayerController>();
     }
 
     // Update is called once per frame

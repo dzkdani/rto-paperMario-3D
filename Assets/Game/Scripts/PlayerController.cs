@@ -19,8 +19,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameManager gameManager;
 
     [Header("Player Components")]
-    [SerializeField] private bool CanMove;
-    [SerializeField] private bool CanInteract;
+    [SerializeField] private bool canMove;
+    [SerializeField] private bool canInteract;
     [SerializeField] private PlayerDirection currentDirection;
     [SerializeField] private PlayerFacing currentFacing;
     [SerializeField] private float speed = 100f;
@@ -29,6 +29,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Ease flipEase = Ease.InQuad;
     [SerializeField] private GameObject notifMark;
     [SerializeField] private GameObject sprite;
+
+    [HideInInspector] public bool CanMove { get { return canMove; } set { canMove = value; } }
+    [HideInInspector] public bool CanInteract { get { return canInteract; } set { canInteract = value; } }
 
     private Rigidbody rb;
     private Animator anim;
@@ -91,7 +94,7 @@ public class PlayerController : MonoBehaviour
     {
         isRotate = true;
         transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), flipDuration).From(transform.rotation.eulerAngles).SetEase(flipEase)
-            .OnComplete(()=> {isRotate = false;});
+            .OnComplete(() => { isRotate = false; });
     }
 
     private void SetSprite()

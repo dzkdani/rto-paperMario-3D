@@ -30,17 +30,21 @@ namespace TOI2D
         [SerializeField] Dialogue dialogObjTest;
         private void Awake()
         {
-            _player = FindObjectOfType<PlayerController>();
+
             typewriterEffect = GetComponent<TypewriterEffect>();
-            CloseDialogue();
+
         }
 
+        private void Start()
+        {
+            CloseDialogue();
+        }
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Equals))
-            {
-                InitDialogue(dialogObjTest);
-            }
+            //if (Input.GetKeyDown(KeyCode.Equals))
+            //{
+            //    InitDialogue(dialogObjTest);
+            //}
 
             if (showDialog)
                 if (Input.GetKeyDown(KeyCode.Space))
@@ -102,7 +106,8 @@ namespace TOI2D
                 }
 
             currentDialogIndex = 0;
-            //_player.canMove = false;
+            //GameplayManager.instance.player.CanMove = false;
+            //GameplayManager.instance.player.CanInteract = false;
             this.dialogObj = dialogObj;
             interactableNotifTemp = interactableNotif;
             this.interactableObject = interactableObject;
@@ -113,55 +118,55 @@ namespace TOI2D
             //StartCoroutine(RunDialogueTypewriter(dialogObj, interactableNotif, interactableObject, player));
         }
 
-        //private IEnumerator RunDialogueTypewriter(Dialogue dialogObj, GameObject interactableNotif = null, InteractableObject interactableObject = null, GameObject player = null)
-        //{
-        //    _player.canMove = false;
-        //    if (interactableObject != null)
-        //        if (interactableObject.npc)
-        //        {
-        //            GameObject npcObject = interactableObject.gameObject;
-        //            NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
-        //            npc.PlayInteruptedAnimation(player.transform, npcObject.transform);
+        private IEnumerator RunDialogueTypewriter(Dialogue dialogObj, GameObject interactableNotif = null, InteractableObject interactableObject = null, GameObject player = null)
+        {
+            //_player.canMove = false;
+            //if (interactableObject != null)
+            //    if (interactableObject.npc)
+            //    {
+            //        GameObject npcObject = interactableObject.gameObject;
+            //        NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
+            //        npc.PlayInteruptedAnimation(player.transform, npcObject.transform);
 
-        //        }
+            //    }
 
-        //    for (int i = 0; i < dialogObj.Dialogues.Length; i++)
-        //    {
+            for (int i = 0; i < dialogObj.Dialogues.Length; i++)
+            {
 
-        //        /* old
-        //        //SetPotrait(dialogObj.Dialogues[i].characterId, dialogObj.potraitDatas);
-        //        //yield return typewriterEffect.Run(dialogObj.Dialogues[i].Dialogue, _textLabel);
-        //        //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-        //        */
-
-
-        //        SetPotrait(dialogObj.Dialogues[i].characterId, dialogObj.potraitDatas);
-        //        Coroutine typingCoroutine = StartCoroutine(typewriterEffect.TypeText(dialogObj.Dialogues[i].Dialogue, _textLabel));
+                //old
+                //SetPotrait(dialogObj.Dialogues[i].characterId, dialogObj.potraitDatas);
+                yield return typewriterEffect.Run(dialogObj.Dialogues[i].Dialogue, _textLabel);
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 
 
-        //        yield return new WaitUntil(() => typingDone || Input.GetKeyDown(KeyCode.Space));
-        //        // Hentikan typewriterEffect jika masih berjalan
-        //        if (!typingDone)
-        //        {
-        //            StopCoroutine(typingCoroutine);
-        //            _textLabel.text = dialogObj.Dialogues[i].Dialogue;
-        //            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-        //        }
 
-        //        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-        //        yield return typingCoroutine;
-        //    }
-        //    if (interactableObject != null)
-        //        if (interactableObject.npc)
-        //        {
-        //            GameObject npcObject = interactableObject.gameObject;
-        //            NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
-        //            npc.SetDefaultDirectionAnimation();
-        //            npc.Interupted(false, 1);
-        //        }
-        //    CloseDialogue(interactableNotif);
+                //SetPotrait(dialogObj.Dialogues[i].characterId, dialogObj.potraitDatas);
+                //Coroutine typingCoroutine = StartCoroutine(typewriterEffect.TypeText(dialogObj.Dialogues[i].Dialogue, _textLabel));
 
-        //}
+
+                //yield return new WaitUntil(() => typingDone || Input.GetKeyDown(KeyCode.Space));
+                //// Hentikan typewriterEffect jika masih berjalan
+                //if (!typingDone)
+                //{
+                //    StopCoroutine(typingCoroutine);
+                //    _textLabel.text = dialogObj.Dialogues[i].Dialogue;
+                //    yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+                //}
+
+                //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+                //yield return typingCoroutine;
+            }
+            //if (interactableObject != null)
+            //    if (interactableObject.npc)
+            //    {
+            //        GameObject npcObject = interactableObject.gameObject;
+            //        NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
+            //        npc.SetDefaultDirectionAnimation();
+            //        npc.Interupted(false, 1);
+            //    }
+            CloseDialogue();
+
+        }
 
         private void CloseDialogue()
         {
@@ -176,8 +181,10 @@ namespace TOI2D
 
             IsOpen = false;
             _textLabel.text = string.Empty;
-            //_player.canMove = true;
-            potrait.gameObject.SetActive(false);
+            //GameplayManager.instance.player.CanMove = true;
+            //GameplayManager.instance.player.CanInteract = true;
+
+            //potrait.gameObject.SetActive(false);
             dialogueBox.SetActive(false);
 
             if (interactableNotifTemp != null)
