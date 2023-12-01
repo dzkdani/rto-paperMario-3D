@@ -32,6 +32,14 @@ public class ProtoNPC : MonoBehaviour
         InitNPC();
     }
 
+    public void NPCInteractionTest()
+    {
+        if (Type == NPCType.walk)
+        {
+            agent.isStopped = true;
+        }
+    }
+
     private void InitNPC()
     {
         if (Type == NPCType.walk)

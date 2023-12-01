@@ -67,6 +67,8 @@ public class Interactable : MonoBehaviour, IInteractable
         {
             npc.transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), 0.25f).From(transform.rotation.eulerAngles).SetEase(Ease.InQuad)
                 .OnComplete(()=> {npc.GetComponent<SpriteRenderer>().flipX = true;});
+
+            npc.GetComponentInParent<ProtoNPC>().NPCInteractionTest();
         }
     }
 
