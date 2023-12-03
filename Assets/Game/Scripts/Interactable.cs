@@ -25,7 +25,7 @@ public class Interactable : MonoBehaviour, IInteractable
         {
             case InteractType.dialogue:
                 if (GameplayManager.instance.dialogueUI != null)
-                    GameplayManager.instance.dialogueUI.InitDialogue(dialogueObj);
+                    GameplayManager.instance.dialogueUI.InitDialogue(dialogueObj, null, this);
                 break;
             case InteractType.teleport:
                 if (GameplayManager.instance.teleportSystem != null)
