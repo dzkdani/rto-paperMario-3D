@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using TOI2D;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ public class Interactable : MonoBehaviour, IInteractable
         switch (Type)
         {
             case InteractType.dialogue:
+                Test4();
                 if (GameplayManager.instance.dialogueUI != null)
                     GameplayManager.instance.dialogueUI.InitDialogue(dialogueObj, null, this);
                 break;
@@ -56,6 +58,18 @@ public class Interactable : MonoBehaviour, IInteractable
     private void Test3()
     {
         Debug.Log("other interaction");
+    }
+
+    private void Test4()
+    {
+        Debug.Log("npc interaction");
+        if (transform.GetChild(0).TryGetComponent<ProtoNPCAnim>(out ProtoNPCAnim npc))
+        {
+            npc.transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), 0.25f).From(transform.rotation.eulerAngles).SetEase(Ease.InQuad)
+                .OnComplete(()=> {npc.GetComponent<SpriteRenderer>().flipX = true;});
+
+            npc.GetComponentInParent<ProtoNPC>().NPCInteractionTest();
+        }
     }
 
     public void SetLastPosition(Vector3 posTarget)

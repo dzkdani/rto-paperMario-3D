@@ -8,7 +8,7 @@ public class ProtoNPCAnim : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<SpriteRenderer>().flipX = true;
+        // GetComponent<SpriteRenderer>().flipX = true;
         camRotY = Camera.main.transform.rotation.y;
         Debug.Log($"get camrotY : {camRotY}");
     }

@@ -10,6 +10,8 @@ public enum NPCType
 
 public class ProtoNPC : MonoBehaviour
 {
+    [SerializeField] private GameObject sprite;
+
     //General
     public NPCType Type;
  
@@ -28,6 +30,14 @@ public class ProtoNPC : MonoBehaviour
 
     private void Start() {
         InitNPC();
+    }
+
+    public void NPCInteractionTest()
+    {
+        if (Type == NPCType.walk)
+        {
+            agent.isStopped = true;
+        }
     }
 
     private void InitNPC()
