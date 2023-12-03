@@ -16,18 +16,22 @@ namespace TOI2D
         private PlayerController _player;
         private TypewriterEffect typewriterEffect;
 
+        private int currentDialogIndex = 0;
+        private Coroutine typingCoroutine;
+
         public bool IsOpen { get; private set; }
         bool isTyping = false;
         bool showDialog = false;
 
         public float typingSpeed = 0.05f;
         public string[] dialogs;
-        private int currentDialogIndex = 0;
-        private Coroutine typingCoroutine;
         GameObject interactableNotifTemp = null;
         public Dialogue dialogObj = null;
-        InteractableObject interactableObject = null;
+        Interactable interactableObject = null;
         [SerializeField] Dialogue dialogObjTest;
+        [SerializeField] RectTransform tearDrop;
+        [SerializeField] RectTransform tearDropBackground;
+        [SerializeField] GameObject tearDropReference;
         private void Awake()
         {
 
@@ -84,6 +88,30 @@ namespace TOI2D
             SetPotrait(dialogObj.Dialogues[currentDialogIndex].characterId, dialogObj.potraitDatas);
             typingCoroutine = StartCoroutine(TypeText(dialogObj.Dialogues[currentDialogIndex].Dialogue));
         }
+        void ConvertnpcPositionToCanvas(GameObject target)
+        {
+
+            //RectTransform canvasRectTransform = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
+            //Vector3 worldPosition = target.transform.position;
+            Vector3 ObjReferenceOnCanvasPosition = Camera.main.WorldToScreenPoint(target.transform.position);
+            tearDropReference.transform.position = new Vector3(ObjReferenceOnCanvasPosition.x, ObjReferenceOnCanvasPosition.y, 0);
+            //RectTransformUtility.ScreenPointToWorldPointInRectangle(canvasRectTransform, Camera.main.WorldToScreenPoint(worldPosition), Camera.main, out canvasPosition);
+
+            //tearDrop.transform.position = new Vector3(ObjReferenceOnCanvasPosition.x, tearDrop.transform.position.y, tearDrop.transform.position.z);
+            //tearDropBackground.transform.position = new Vector3(ObjReferenceOnCanvasPosition.x, tearDropBackground.transform.position.y, tearDropBackground.transform.position.z);
+            Vector3 direction = tearDropReference.transform.position - tearDrop.transform.position;
+
+            //// Mengatur rotation object canvas berdasarkan vector z dari object referensi
+            tearDrop.rotation = Quaternion.LookRotation(direction);
+            tearDropBackground.rotation = Quaternion.LookRotation(direction);
+            //Transform reference;
+            //Vector3 difference = canvasPosition - tearDrop.transform.position;
+            //Debug.Log("diff : " + difference + " ; canvas position : " + canvasPosition);
+            //tearDrop.transform.LookAt(difference);
+            //tearDropBackground.transform.LookAt(difference);
+
+
+        }
         IEnumerator TypeText(string text)
         {
             isTyping = true;
@@ -94,26 +122,27 @@ namespace TOI2D
             }
             isTyping = false;
         }
-        public void InitDialogue(Dialogue dialogObj, GameObject interactableNotif = null, InteractableObject interactableObject = null, GameObject player = null)
+        public void InitDialogue(Dialogue dialogObj, GameObject interactableNotif = null, Interactable interactableObject = null, GameObject player = null)
         {
-            if (interactableObject != null)
-                if (interactableObject.npc)
-                {
-                    GameObject npcObject = interactableObject.gameObject;
-                    //NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
-                    //npc.PlayInteruptedAnimation(player.transform, npcObject.transform);
+            //if (interactableObject != null)
+            //    if (interactableObject.npc)
+            //    {
+            //        GameObject npcObject = interactableObject.gameObject;
+            //        NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
+            //        npc.PlayInteruptedAnimation(player.transform, npcObject.transform);
 
-                }
+            //    }
 
             currentDialogIndex = 0;
-            //GameplayManager.instance.player.CanMove = false;
-            //GameplayManager.instance.player.CanInteract = false;
+            GameplayManager.instance.player.CanMove = false;
+            GameplayManager.instance.player.CanInteract = false;
             this.dialogObj = dialogObj;
             interactableNotifTemp = interactableNotif;
             this.interactableObject = interactableObject;
 
             showDialog = true;
             dialogueBox.SetActive(true);
+            ConvertnpcPositionToCanvas(interactableObject.gameObject);
             ShowDialog();
             //StartCoroutine(RunDialogueTypewriter(dialogObj, interactableNotif, interactableObject, player));
         }
@@ -170,19 +199,19 @@ namespace TOI2D
 
         private void CloseDialogue()
         {
-            if (interactableObject != null)
-                if (interactableObject.npc)
-                {
-                    GameObject npcObject = interactableObject.gameObject;
-                    //NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
-                    //npc.SetDefaultDirectionAnimation();
-                    //npc.Interupted(false, 1);
-                }
+            //if (interactableObject != null)
+            //    if (interactableObject.npc)
+            //    {
+            //        GameObject npcObject = interactableObject.gameObject;
+            //        //NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
+            //        //npc.SetDefaultDirectionAnimation();
+            //        //npc.Interupted(false, 1);
+            //    }
 
             IsOpen = false;
             _textLabel.text = string.Empty;
-            //GameplayManager.instance.player.CanMove = true;
-            //GameplayManager.instance.player.CanInteract = true;
+            GameplayManager.instance.player.CanMove = true;
+            GameplayManager.instance.player.CanInteract = true;
 
             //potrait.gameObject.SetActive(false);
             dialogueBox.SetActive(false);
