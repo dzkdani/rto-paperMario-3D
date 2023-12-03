@@ -29,9 +29,9 @@ namespace TOI2D
         public Dialogue dialogObj = null;
         Interactable interactableObject = null;
         [SerializeField] Dialogue dialogObjTest;
-        [SerializeField] GameObject tearDrop;
-        [SerializeField] GameObject tearDropBackground;
-
+        [SerializeField] RectTransform tearDrop;
+        [SerializeField] RectTransform tearDropBackground;
+        [SerializeField] GameObject tearDropReference;
         private void Awake()
         {
 
@@ -90,27 +90,26 @@ namespace TOI2D
         }
         void ConvertnpcPositionToCanvas(GameObject target)
         {
-            RectTransform canvasRectTransform = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
-            Vector3 worldPosition = target.transform.position;
-            Vector3 canvasPosition;
 
-            RectTransformUtility.ScreenPointToWorldPointInRectangle(canvasRectTransform, Camera.main.WorldToScreenPoint(worldPosition), Camera.main, out canvasPosition);
+            //RectTransform canvasRectTransform = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
+            //Vector3 worldPosition = target.transform.position;
+            Vector3 ObjReferenceOnCanvasPosition = Camera.main.WorldToScreenPoint(target.transform.position);
+            tearDropReference.transform.position = new Vector3(ObjReferenceOnCanvasPosition.x, ObjReferenceOnCanvasPosition.y, 0);
+            //RectTransformUtility.ScreenPointToWorldPointInRectangle(canvasRectTransform, Camera.main.WorldToScreenPoint(worldPosition), Camera.main, out canvasPosition);
 
-            //float rotationZ = Mathf.Atan2(canvasPosition.y, canvasPosition.x) * Mathf.Rad2Deg;
-            //tearDrop.transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
-            //tearDropBackground.transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
+            //tearDrop.transform.position = new Vector3(ObjReferenceOnCanvasPosition.x, tearDrop.transform.position.y, tearDrop.transform.position.z);
+            //tearDropBackground.transform.position = new Vector3(ObjReferenceOnCanvasPosition.x, tearDropBackground.transform.position.y, tearDropBackground.transform.position.z);
+            Vector3 direction = tearDropReference.transform.position - tearDrop.transform.position;
 
-            Transform reference;
-            //reference.LookAt(canvasPosition);
-            Vector3 difference = canvasPosition - tearDrop.transform.position;
-            Debug.Log("diff : " + difference + " ; canvas position : " + canvasPosition);
-            tearDrop.transform.LookAt(difference);
-            tearDropBackground.transform.LookAt(difference);
-            //Quaternion rotation = Quaternion.LookRotation(difference, Vector3.up);
-            //Vector3 lookAtPosition = new Vector3(canvasPosition.x, camva, canvasPosition.z);
-            //tearDrop.transform.rotation = rotation;
-            //tearDropBackground.transform.rotation = rotation;
-            //tearDropBackground.transform.LookAt(new Vector3(0, 0, canvasPosition.z));
+            //// Mengatur rotation object canvas berdasarkan vector z dari object referensi
+            tearDrop.rotation = Quaternion.LookRotation(direction);
+            tearDropBackground.rotation = Quaternion.LookRotation(direction);
+            //Transform reference;
+            //Vector3 difference = canvasPosition - tearDrop.transform.position;
+            //Debug.Log("diff : " + difference + " ; canvas position : " + canvasPosition);
+            //tearDrop.transform.LookAt(difference);
+            //tearDropBackground.transform.LookAt(difference);
+
 
         }
         IEnumerator TypeText(string text)
