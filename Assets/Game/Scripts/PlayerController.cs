@@ -18,20 +18,23 @@ public class PlayerController : MonoBehaviour
     [Header("Manager")]
     [SerializeField] private GameManager gameManager;
 
+    [Header("Data")]
+    [SerializeField] private PlayerData PlayerData;
+
     [Header("Player Components")]
-    [SerializeField] private bool canMove;
-    [SerializeField] private bool canInteract;
     [SerializeField] private PlayerDirection currentDirection;
     [SerializeField] private PlayerFacing currentFacing;
-    [SerializeField] private float speed = 100f;
-    [SerializeField] private float smooth = 0.4f;
-    [SerializeField] private float flipDuration = 0.25f;
-    [SerializeField] private Ease flipEase = Ease.InQuad;
     [SerializeField] private GameObject notifMark;
     [SerializeField] private GameObject sprite;
+    [SerializeField] private bool canMove;
+    [SerializeField] private bool canInteract;
+    private Ease flipEase = Ease.InQuad;
+    private float flipDuration = 0.25f;
+    private float smooth = 0.4f;
+    private float speed = 100f;
 
-    [HideInInspector] public bool CanMove { get { return canMove; } set { canMove = value; } }
-    [HideInInspector] public bool CanInteract { get { return canInteract; } set { canInteract = value; } }
+    public bool CanMove { get { return canMove; } set { canMove = value; } }
+    public bool CanInteract { get { return canInteract; } set { canInteract = value; } }
 
     private Rigidbody rb;
     private Animator anim;
@@ -54,11 +57,22 @@ public class PlayerController : MonoBehaviour
 
     private void InitPlayer()
     {
+        //load data
+        LoadPlayerData();
+
         //player init state
         CanMove = true;
         CanInteract = true;
         isRotate = false;
         currentDirection = PlayerDirection.left;
+    }
+
+    private void LoadPlayerData()
+    {
+        speed = PlayerData.PlayerSpeed;
+        smooth = PlayerData.Smooth;
+        flipDuration = PlayerData.Flip;
+        flipEase = PlayerData.PlayerEase;
     }
 
     void Update()

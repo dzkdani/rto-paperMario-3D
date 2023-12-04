@@ -46,10 +46,10 @@ namespace TOI2D
                 switch (interactType)
                 {
                     case InteractableType.Dialogue:
-                        if (!npc)
-                            dialogueUI.InitDialogue(dialogObj, interactableNotif);
-                        else
-                            dialogueUI.InitDialogue(dialogObj, interactableNotif, this, player.gameObject);
+                        //if (!npc)
+                        //    dialogueUI.InitDialogue(dialogObj, interactableNotif);
+                        //else
+                        //    dialogueUI.InitDialogue(dialogObj, interactableNotif, this, player.gameObject);
 
                         break;
                     case InteractableType.Teleport:
