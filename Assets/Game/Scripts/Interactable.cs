@@ -1,5 +1,5 @@
-using System;
 using DG.Tweening;
+using System;
 using TOI2D;
 using UnityEngine;
 
@@ -11,6 +11,7 @@ public class Interactable : MonoBehaviour, IInteractable
     [SerializeField] private Dialogue dialogueObj;
     [SerializeField] private Transform teleportPos;
     public Vector3 lastpos;
+    public TeleportPreparation[] preparationPosition;
     public TeleportTarget teleportTarget;
     private GameplayManager gameplayManager;
 
@@ -31,7 +32,7 @@ public class Interactable : MonoBehaviour, IInteractable
                 break;
             case InteractType.teleport:
                 if (GameplayManager.instance.teleportSystem != null)
-                    GameplayManager.instance.teleportSystem.InitTeleport(teleportTarget, this);
+                    GameplayManager.instance.teleportSystem.PreparaTeleport(teleportTarget, this, preparationPosition);
                 break;
             case InteractType.other:
                 OnInteract = Test3;
@@ -66,7 +67,7 @@ public class Interactable : MonoBehaviour, IInteractable
         if (transform.GetChild(0).TryGetComponent<ProtoNPCAnim>(out ProtoNPCAnim npc))
         {
             npc.transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), 0.25f).From(transform.rotation.eulerAngles).SetEase(Ease.InQuad)
-                .OnComplete(()=> {npc.GetComponent<SpriteRenderer>().flipX = true;});
+                .OnComplete(() => { npc.GetComponent<SpriteRenderer>().flipX = true; });
 
             npc.GetComponentInParent<ProtoNPC>().NPCInteractionTest();
         }
