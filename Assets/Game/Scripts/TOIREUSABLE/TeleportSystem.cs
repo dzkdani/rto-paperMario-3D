@@ -87,7 +87,7 @@ namespace TOI2D
                 if (animation != null)
                 {
                     Debug.Log("Animation Direction : " + animation);
-                    player.PlayAnimation(animation);
+                    player.SetAnimation(animation);
                     //play animation
                 }
                 player.transform.position = Vector3.MoveTowards(player.transform.position, target.position, speed * Time.deltaTime);

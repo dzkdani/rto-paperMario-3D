@@ -9,8 +9,16 @@ public enum PlayerDirection
 
 public enum PlayerFacing
 {
-    front,
-    back
+    up,
+    down
+}
+
+public enum PlayerState
+{
+    idle,
+    walk,
+    interact,
+    teleport
 }
 
 public class PlayerController : MonoBehaviour
@@ -22,21 +30,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerData PlayerData;
 
     [Header("Player Components")]
+    [SerializeField] private PlayerState currentState;
     [SerializeField] private PlayerDirection currentDirection;
     [SerializeField] private PlayerFacing currentFacing;
     [SerializeField] private GameObject notifMark;
     [SerializeField] private GameObject sprite;
     [SerializeField] private bool canMove;
     [SerializeField] private bool canInteract;
-    private Ease flipEase = Ease.InQuad;
-    private float flipDuration = 0.25f;
-    private float smooth = 0.4f;
-    private float speed = 100f;
+    private Ease flipEase;
+    private float flipDuration;
+    private float smooth;
+    private float speed;
 
     private Rigidbody rb;
-    private Animator anim;
     private float horizontalMove;
     private float verticalMove;
+    private Vector3 movement;
     private Vector3 currentVelocity;
     private bool isRotate;
 
@@ -47,7 +56,7 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        anim = sprite.GetComponent<Animator>();
+        sprite = transform.GetChild(0).gameObject;
     }
 
     void Start()
@@ -55,16 +64,18 @@ public class PlayerController : MonoBehaviour
         InitPlayer();
     }
 
-    private void InitPlayer()
+    public void InitPlayer()
     {
-        //load data
+        //load player
         LoadPlayerData();
-
         //player init state
-        CanMove = true;
-        CanInteract = true;
+        canMove = true;
+        canInteract = true;
         isRotate = false;
+        currentState = PlayerState.idle;
+        currentFacing = PlayerFacing.down;
         currentDirection = PlayerDirection.left;
+        SetAnimation(currentState.ToString() + "_" + currentFacing.ToString() + "_" + currentDirection.ToString());
     }
 
     private void LoadPlayerData()
@@ -84,31 +95,40 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 move = transform.position + (speed * Time.deltaTime * new Vector3(horizontalMove, 0, verticalMove));
-        if (CanMove)
-            transform.position = Vector3.SmoothDamp(transform.position, move, ref currentVelocity, smooth);
+        Move();
     }
 
     private void GetInput()
     {
         horizontalMove = Input.GetAxis("Horizontal");
         verticalMove = Input.GetAxis("Vertical");
+        movement = new Vector3(horizontalMove, 0, verticalMove).normalized;
 
         if (Input.GetKeyDown(KeyCode.F) && CanInteract)
             Interact();
+        if (Input.GetKeyDown(KeyCode.Q))
+            Debug.Log($"Rot Cam to Left");
+        if (Input.GetKeyDown(KeyCode.E))
+            Debug.Log($"Rot Cam to Right");
     }
 
-    public void PlayAnimation(string Animation)
-    {
-        anim.Play(Animation);
-    }
-
-    public void SetPlayerPos(Vector3 pos)
-    {
-        transform.position = pos;
-    }
+    public void SetAnimation(string Animation) => sprite.GetComponent<PlayerAnimation>().PlayAnimation(Animation);
+    public void SetPlayerPos(Vector3 pos) => transform.position = pos;
     public Vector3 GetPlayerPos() => transform.position;
+    
     #region Movement
+    private void Move()
+    {
+        if (!CanMove && !isRotate)
+            return;
+        currentState = movement != Vector3.zero? PlayerState.walk : PlayerState.idle;
+        Vector3 targetPos = transform.position + (movement * speed * Time.deltaTime);
+        transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref currentVelocity, smooth);
+        SetAnimation(currentState.ToString() + "_" + currentFacing.ToString() + "_" + "left");
+    }
+    #endregion
+
+    #region Sprite
     private void RotateSprite()
     {
         isRotate = true;
@@ -119,28 +139,26 @@ public class PlayerController : MonoBehaviour
     private void SetSprite()
     {
         SpriteRotation();
-        SpriteFacing();
+        SpriteDirection();
     }
 
-    private void SpriteFacing()
+    private void SpriteDirection()
     {
-        if (verticalMove > 0f)
-        {
-            //back facing
-            //set anim
-        }
-        else if (verticalMove < 0f)
-        {
-            //front facing
-            //set anim
-        }
+        if (movement == Vector3.zero)
+            return;
+        
+        if (movement.z > 0f)
+            currentFacing = PlayerFacing.up;
+        if (movement.z < 0f)
+            currentFacing = PlayerFacing.down;
+        string _anim = "walk" + "_" + currentFacing.ToString() + "_" + PlayerDirection.left;
+        SetAnimation(_anim);   
     }
 
     private void SpriteRotation()
     {
         if (!canInteract)
             return;
-
         if (isRotate)
             return;
 
@@ -170,7 +188,6 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Interaction
-
     private void NotifRotation()
     {
         if (notifMark.activeInHierarchy)
@@ -188,7 +205,6 @@ public class PlayerController : MonoBehaviour
         {
             Interactable = obj;
             notifMark.SetActive(true);
-            //Debug.Log("Player in radius of interactable");
         }
     }
 
@@ -198,9 +214,7 @@ public class PlayerController : MonoBehaviour
         {
             Interactable = null;
             notifMark.SetActive(false);
-            //Debug.Log("Player out radius of interactable");
         }
     }
     #endregion
-
 }

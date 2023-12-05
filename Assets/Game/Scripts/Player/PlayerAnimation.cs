@@ -4,31 +4,26 @@ using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
 {
-    [SerializeField] private Animator anim;
-    private readonly string[] idles = {"idle_btmLeft", "idle_topLeft"};
-    private readonly string[] walks = {"walk_btmLeft", "walk_topLeft"};
-    private string[] currentAnims;
+    private Animator anim;
 
     void Awake() {
         anim = GetComponent<Animator>();    
     }
 
-    void Start() {
-        InitAnim();
+    public void PlayAnimation(string _state)
+    {
+        anim.Play(_state);
     }
 
-    private void InitAnim()
+    public void SetSprite()
     {
-        anim.Play(idles[0]);
+        //if nothing, init sprite
+        
+        //else, set expression sprite
     }
 
-    public void SetAnimation(Vector2 direction)
+    public void SetReaction()
     {
-        if (direction.magnitude < 0.01f)
-            currentAnims = idles;
-        else
-            currentAnims = walks;
-
-        Debug.Log($"current plyr dir : {direction}, {direction.magnitude}");
+        //set & animate reaction
     }
 }

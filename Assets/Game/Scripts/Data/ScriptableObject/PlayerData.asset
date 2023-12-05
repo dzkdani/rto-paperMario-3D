@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   playerSpeed: 100
-  smooth: 0.4
-  flipDuration: 0.25
+  smooth: 0.5
+  flipDuration: 0.4
   flipEase: 5
