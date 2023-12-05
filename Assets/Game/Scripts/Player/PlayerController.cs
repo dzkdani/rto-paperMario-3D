@@ -33,15 +33,15 @@ public class PlayerController : MonoBehaviour
     private float smooth = 0.4f;
     private float speed = 100f;
 
-    public bool CanMove { get { return canMove; } set { canMove = value; } }
-    public bool CanInteract { get { return canInteract; } set { canInteract = value; } }
-
     private Rigidbody rb;
     private Animator anim;
     private float horizontalMove;
     private float verticalMove;
     private Vector3 currentVelocity;
     private bool isRotate;
+
+    public bool CanMove { get { return canMove; } set { canMove = value; } }
+    public bool CanInteract { get { return canInteract; } set { canInteract = value; } }
     public IInteractable Interactable { get; set; }
 
     void Awake()
@@ -138,6 +138,9 @@ public class PlayerController : MonoBehaviour
 
     private void SpriteRotation()
     {
+        if (!canInteract)
+            return;
+
         if (isRotate)
             return;
 

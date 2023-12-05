@@ -90,25 +90,12 @@ namespace TOI2D
         }
         void ConvertnpcPositionToCanvas(GameObject target)
         {
-
-            //RectTransform canvasRectTransform = FindObjectOfType<Canvas>().GetComponent<RectTransform>();
-            //Vector3 worldPosition = target.transform.position;
             Vector3 ObjReferenceOnCanvasPosition = Camera.main.WorldToScreenPoint(target.transform.position);
             tearDropReference.transform.position = new Vector3(ObjReferenceOnCanvasPosition.x, ObjReferenceOnCanvasPosition.y, 0);
-            //RectTransformUtility.ScreenPointToWorldPointInRectangle(canvasRectTransform, Camera.main.WorldToScreenPoint(worldPosition), Camera.main, out canvasPosition);
-
-            //tearDrop.transform.position = new Vector3(ObjReferenceOnCanvasPosition.x, tearDrop.transform.position.y, tearDrop.transform.position.z);
-            //tearDropBackground.transform.position = new Vector3(ObjReferenceOnCanvasPosition.x, tearDropBackground.transform.position.y, tearDropBackground.transform.position.z);
             Vector3 direction = tearDropReference.transform.position - tearDrop.transform.position;
 
-            //// Mengatur rotation object canvas berdasarkan vector z dari object referensi
             tearDrop.rotation = Quaternion.LookRotation(direction);
             tearDropBackground.rotation = Quaternion.LookRotation(direction);
-            //Transform reference;
-            //Vector3 difference = canvasPosition - tearDrop.transform.position;
-            //Debug.Log("diff : " + difference + " ; canvas position : " + canvasPosition);
-            //tearDrop.transform.LookAt(difference);
-            //tearDropBackground.transform.LookAt(difference);
 
 
         }
@@ -124,15 +111,6 @@ namespace TOI2D
         }
         public void InitDialogue(Dialogue dialogObj, GameObject interactableNotif = null, Interactable interactableObject = null, GameObject player = null)
         {
-            //if (interactableObject != null)
-            //    if (interactableObject.npc)
-            //    {
-            //        GameObject npcObject = interactableObject.gameObject;
-            //        NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
-            //        npc.PlayInteruptedAnimation(player.transform, npcObject.transform);
-
-            //    }
-
             currentDialogIndex = 0;
             GameplayManager.instance.player.CanMove = false;
             GameplayManager.instance.player.CanInteract = false;
@@ -149,70 +127,23 @@ namespace TOI2D
 
         private IEnumerator RunDialogueTypewriter(Dialogue dialogObj, GameObject interactableNotif = null, InteractableObject interactableObject = null, GameObject player = null)
         {
-            //_player.canMove = false;
-            //if (interactableObject != null)
-            //    if (interactableObject.npc)
-            //    {
-            //        GameObject npcObject = interactableObject.gameObject;
-            //        NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
-            //        npc.PlayInteruptedAnimation(player.transform, npcObject.transform);
 
-            //    }
 
             for (int i = 0; i < dialogObj.Dialogues.Length; i++)
             {
-
-                //old
-                //SetPotrait(dialogObj.Dialogues[i].characterId, dialogObj.potraitDatas);
                 yield return typewriterEffect.Run(dialogObj.Dialogues[i].Dialogue, _textLabel);
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-
-
-
-                //SetPotrait(dialogObj.Dialogues[i].characterId, dialogObj.potraitDatas);
-                //Coroutine typingCoroutine = StartCoroutine(typewriterEffect.TypeText(dialogObj.Dialogues[i].Dialogue, _textLabel));
-
-
-                //yield return new WaitUntil(() => typingDone || Input.GetKeyDown(KeyCode.Space));
-                //// Hentikan typewriterEffect jika masih berjalan
-                //if (!typingDone)
-                //{
-                //    StopCoroutine(typingCoroutine);
-                //    _textLabel.text = dialogObj.Dialogues[i].Dialogue;
-                //    yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-                //}
-
-                //yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-                //yield return typingCoroutine;
             }
-            //if (interactableObject != null)
-            //    if (interactableObject.npc)
-            //    {
-            //        GameObject npcObject = interactableObject.gameObject;
-            //        NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
-            //        npc.SetDefaultDirectionAnimation();
-            //        npc.Interupted(false, 1);
-            //    }
             CloseDialogue();
 
         }
 
         private void CloseDialogue()
         {
-            //if (interactableObject != null)
-            //    if (interactableObject.npc)
-            //    {
-            //        GameObject npcObject = interactableObject.gameObject;
-            //        //NPCController npc = interactableObject.gameObject.GetComponent<NPCController>();
-            //        //npc.SetDefaultDirectionAnimation();
-            //        //npc.Interupted(false, 1);
-            //    }
-
             IsOpen = false;
             _textLabel.text = string.Empty;
             GameplayManager.instance.player.CanMove = true;
             GameplayManager.instance.player.CanInteract = true;
-
             //potrait.gameObject.SetActive(false);
             dialogueBox.SetActive(false);
 
