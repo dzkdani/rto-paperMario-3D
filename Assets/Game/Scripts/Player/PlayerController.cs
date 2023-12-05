@@ -22,18 +22,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerData PlayerData;
 
     [Header("Player Components")]
-    [SerializeField] private GameObject playerSprite;
     [SerializeField] private PlayerDirection currentDirection;
     [SerializeField] private PlayerFacing currentFacing;
     [SerializeField] private GameObject notifMark;
+    [SerializeField] private GameObject sprite;
     [SerializeField] private bool canMove;
     [SerializeField] private bool canInteract;
-    private PlayerAnimation playerAnimation;
-    private Ease flipEase;
-    private float flipDuration;
-    private float smooth;
-    private float speed;
-    private bool isWalk;
+    private Ease flipEase = Ease.InQuad;
+    private float flipDuration = 0.25f;
+    private float smooth = 0.4f;
+    private float speed = 100f;
 
     public bool CanMove { get { return canMove; } set { canMove = value; } }
     public bool CanInteract { get { return canInteract; } set { canInteract = value; } }
@@ -48,8 +46,8 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        // rb = GetComponent<Rigidbody>();
-        playerAnimation = playerSprite.GetComponent<PlayerAnimation>();
+        rb = GetComponent<Rigidbody>();
+        anim = sprite.GetComponent<Animator>();
     }
 
     void Start()
@@ -64,7 +62,6 @@ public class PlayerController : MonoBehaviour
 
         //player init state
         CanMove = true;
-        isWalk = false;
         CanInteract = true;
         isRotate = false;
         currentDirection = PlayerDirection.left;
@@ -87,7 +84,9 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
+        Vector3 move = transform.position + (speed * Time.deltaTime * new Vector3(horizontalMove, 0, verticalMove));
+        if (CanMove)
+            transform.position = Vector3.SmoothDamp(transform.position, move, ref currentVelocity, smooth);
     }
 
     private void GetInput()
@@ -99,21 +98,17 @@ public class PlayerController : MonoBehaviour
             Interact();
     }
 
-    public void SetPlayerPos(Vector3 pos) => transform.position = pos;
-    
-    public Vector3 GetPlayerPos() => transform.position;
-
-    #region Movement
-
-    private void Move()
+    public void PlayAnimation(string Animation)
     {
-        Vector3 move = transform.position + (speed * Time.deltaTime * new Vector3(horizontalMove, 0, verticalMove));
-        if (CanMove)
-        {
-            transform.position = Vector3.SmoothDamp(transform.position, move, ref currentVelocity, smooth);
-            isWalk = true;
-        }
+        anim.Play(Animation);
     }
+
+    public void SetPlayerPos(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+    public Vector3 GetPlayerPos() => transform.position;
+    #region Movement
     private void RotateSprite()
     {
         isRotate = true;
@@ -124,14 +119,20 @@ public class PlayerController : MonoBehaviour
     private void SetSprite()
     {
         SpriteRotation();
-        SpriteAnimation();
+        SpriteFacing();
     }
 
-    private void SpriteAnimation()
+    private void SpriteFacing()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (verticalMove > 0f)
         {
-            
+            //back facing
+            //set anim
+        }
+        else if (verticalMove < 0f)
+        {
+            //front facing
+            //set anim
         }
     }
 
@@ -184,7 +185,7 @@ public class PlayerController : MonoBehaviour
         {
             Interactable = obj;
             notifMark.SetActive(true);
-            Debug.Log("Player in radius of interactable");
+            //Debug.Log("Player in radius of interactable");
         }
     }
 
@@ -194,13 +195,9 @@ public class PlayerController : MonoBehaviour
         {
             Interactable = null;
             notifMark.SetActive(false);
-            Debug.Log("Player out radius of interactable");
+            //Debug.Log("Player out radius of interactable");
         }
     }
     #endregion
-}
 
-public static class Extention
-{
-    public static Vector2 ToVector2 (this Vector3 move) => new Vector2(move.x, move.z);
 }
