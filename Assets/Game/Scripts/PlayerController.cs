@@ -98,6 +98,11 @@ public class PlayerController : MonoBehaviour
             Interact();
     }
 
+    public void PlayAnimation(string Animation)
+    {
+        anim.Play(Animation);
+    }
+
     public void SetPlayerPos(Vector3 pos)
     {
         transform.position = pos;
@@ -180,7 +185,7 @@ public class PlayerController : MonoBehaviour
         {
             Interactable = obj;
             notifMark.SetActive(true);
-            Debug.Log("Player in radius of interactable");
+            //Debug.Log("Player in radius of interactable");
         }
     }
 
@@ -190,7 +195,7 @@ public class PlayerController : MonoBehaviour
         {
             Interactable = null;
             notifMark.SetActive(false);
-            Debug.Log("Player out radius of interactable");
+            //Debug.Log("Player out radius of interactable");
         }
     }
     #endregion

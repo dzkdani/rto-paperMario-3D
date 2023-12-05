@@ -12,7 +12,6 @@ namespace TOI2D
     [System.Serializable]
     public struct TeleportPreparation
     {
-        public string playerAnimationID;
         public Transform target;
         public float durationToTarget;
     }
@@ -41,20 +40,57 @@ namespace TOI2D
             player.CanMove = false;
             for (int i = 0; i < preparationPos.Length; i++)
             {
-                StartCoroutine(MoveToTargetWithDuration(preparationPos[i].target, preparationPos[i].durationToTarget));
+                string animationTarget = CheckPlayerPositionToSetAnimation(preparationPos[i].target);
+                yield return StartCoroutine(MoveToTargetWithDuration(preparationPos[i].target, preparationPos[i].durationToTarget, animationTarget));
             }
-            yield return new WaitForSeconds(baseAnimationDuration * 4);
+            yield return new WaitForSeconds(baseAnimationDuration);
             InitTeleport(target, io);
         }
 
-        IEnumerator MoveToTargetWithDuration(Transform target, float duration)
+        string CheckPlayerPositionToSetAnimation(Transform target)
+        {
+            string animation = "";
+
+            if (player.transform.position.z < target.transform.position.z)
+            {
+                if (player.transform.position.x >= target.transform.position.x)
+                {
+                    animation = "walk_up_left";
+                }
+                if (player.transform.position.x < target.transform.position.x)
+                {
+                    animation = "walk_up_right";
+                }
+            }
+            else
+            {
+                if (player.transform.position.x >= target.transform.position.x)
+                {
+                    animation = "walk_down_left";
+                }
+                if (player.transform.position.x < target.transform.position.x)
+                {
+                    animation = "walk_down_right";
+                }
+            }
+
+
+            return animation;
+        }
+        IEnumerator MoveToTargetWithDuration(Transform target, float duration, string animation = null)
         {
             float distance = GetDistance(target, player.transform);
             float speed = distance / duration;
 
             while (distance > 0f)
             {
-                player.transform.Translate(speed * Time.deltaTime * Vector3.forward);
+                if (animation != null)
+                {
+                    Debug.Log("Animation Direction : " + animation);
+                    player.PlayAnimation(animation);
+                    //play animation
+                }
+                player.transform.position = Vector3.MoveTowards(player.transform.position, target.position, speed * Time.deltaTime);
                 distance -= speed * Time.deltaTime;
 
                 yield return null;
@@ -65,6 +101,7 @@ namespace TOI2D
         {
             return Vector3.Distance(player.transform.position, target.transform.position);
         }
+
         public void InitTeleport(TeleportTarget target, Interactable io)
         {
             switch (target)
@@ -90,12 +127,12 @@ namespace TOI2D
                 uITransition.FadeOut();
             }
 
+            player.SetPlayerPos(targetPos);
             yield return new WaitForSeconds(baseAnimationDuration * 2);
 
 
             //_player.CanMove = false;
             //Debug.Log(_player.canMove);
-            player.SetPlayerPos(targetPos);
             //_player.RecalculatingBoundary();
             //FindObjectOfType<CameraVirtualManager>().SetCamera();
 
