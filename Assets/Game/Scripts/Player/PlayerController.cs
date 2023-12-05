@@ -22,16 +22,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerData PlayerData;
 
     [Header("Player Components")]
+    [SerializeField] private GameObject playerSprite;
     [SerializeField] private PlayerDirection currentDirection;
     [SerializeField] private PlayerFacing currentFacing;
     [SerializeField] private GameObject notifMark;
-    [SerializeField] private GameObject sprite;
     [SerializeField] private bool canMove;
     [SerializeField] private bool canInteract;
-    private Ease flipEase = Ease.InQuad;
-    private float flipDuration = 0.25f;
-    private float smooth = 0.4f;
-    private float speed = 100f;
+    private PlayerAnimation playerAnimation;
+    private Ease flipEase;
+    private float flipDuration;
+    private float smooth;
+    private float speed;
+    private bool isWalk;
 
     public bool CanMove { get { return canMove; } set { canMove = value; } }
     public bool CanInteract { get { return canInteract; } set { canInteract = value; } }
@@ -46,8 +48,8 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        anim = sprite.GetComponent<Animator>();
+        // rb = GetComponent<Rigidbody>();
+        playerAnimation = playerSprite.GetComponent<PlayerAnimation>();
     }
 
     void Start()
@@ -62,6 +64,7 @@ public class PlayerController : MonoBehaviour
 
         //player init state
         CanMove = true;
+        isWalk = false;
         CanInteract = true;
         isRotate = false;
         currentDirection = PlayerDirection.left;
@@ -84,9 +87,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 move = transform.position + (speed * Time.deltaTime * new Vector3(horizontalMove, 0, verticalMove));
-        if (CanMove)
-            transform.position = Vector3.SmoothDamp(transform.position, move, ref currentVelocity, smooth);
+        Move();
     }
 
     private void GetInput()
@@ -98,12 +99,21 @@ public class PlayerController : MonoBehaviour
             Interact();
     }
 
-    public void SetPlayerPos(Vector3 pos)
-    {
-        transform.position = pos;
-    }
+    public void SetPlayerPos(Vector3 pos) => transform.position = pos;
+    
     public Vector3 GetPlayerPos() => transform.position;
+
     #region Movement
+
+    private void Move()
+    {
+        Vector3 move = transform.position + (speed * Time.deltaTime * new Vector3(horizontalMove, 0, verticalMove));
+        if (CanMove)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, move, ref currentVelocity, smooth);
+            isWalk = true;
+        }
+    }
     private void RotateSprite()
     {
         isRotate = true;
@@ -114,20 +124,14 @@ public class PlayerController : MonoBehaviour
     private void SetSprite()
     {
         SpriteRotation();
-        SpriteFacing();
+        SpriteAnimation();
     }
 
-    private void SpriteFacing()
+    private void SpriteAnimation()
     {
-        if (verticalMove > 0f)
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            //back facing
-            //set anim
-        }
-        else if (verticalMove < 0f)
-        {
-            //front facing
-            //set anim
+            
         }
     }
 
@@ -194,5 +198,9 @@ public class PlayerController : MonoBehaviour
         }
     }
     #endregion
+}
 
+public static class Extention
+{
+    public static Vector2 ToVector2 (this Vector3 move) => new Vector2(move.x, move.z);
 }

@@ -10,7 +10,6 @@ public class ProtoNPCAnim : MonoBehaviour
     {
         // GetComponent<SpriteRenderer>().flipX = true;
         camRotY = Camera.main.transform.rotation.y;
-        Debug.Log($"get camrotY : {camRotY}");
     }
 
     // Update is called once per frame
