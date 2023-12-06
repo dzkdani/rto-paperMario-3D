@@ -38,6 +38,7 @@ namespace TOI2D
         {
             player.CanInteract = false;
             player.CanMove = false;
+            player.OnTeleport = true;
             for (int i = 0; i < preparationPos.Length; i++)
             {
                 string animationTarget = CheckPlayerPositionToSetAnimation(preparationPos[i].target);
@@ -53,7 +54,7 @@ namespace TOI2D
 
             if (player.transform.position.z < target.transform.position.z)
             {
-                if (player.transform.position.x >= target.transform.position.x)
+                if (player.transform.position.x > target.transform.position.x)
                 {
                     animation = "walk_up_left";
                 }
@@ -64,7 +65,7 @@ namespace TOI2D
             }
             else
             {
-                if (player.transform.position.x >= target.transform.position.x)
+                if (player.transform.position.x > target.transform.position.x)
                 {
                     animation = "walk_down_left";
                 }
@@ -86,7 +87,6 @@ namespace TOI2D
             {
                 if (animation != null)
                 {
-                    Debug.Log("Animation Direction : " + animation);
                     player.SetAnimation(animation);
                     //play animation
                 }
@@ -146,6 +146,7 @@ namespace TOI2D
             yield return new WaitForSeconds(baseAnimationDuration * 2);
             player.CanInteract = true;
             player.CanMove = true;
+            player.OnTeleport = false;
         }
     }
 }
