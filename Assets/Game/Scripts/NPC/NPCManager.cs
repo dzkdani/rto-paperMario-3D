@@ -2,20 +2,21 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum NPCType 
-{
-    walk,
-    idle 
-}
+// public enum NPCType 
+// {
+//     walk,
+//     idle 
+// }
 
-public class ProtoNPC : MonoBehaviour
+[RequireComponent(typeof(Interactable))]
+public class NPCManager : MonoBehaviour
 {
-    [SerializeField] private GameObject sprite;
 
     //General
+    [SerializeField] private GameObject sprite;
     public NPCType Type;
  
-    //Movement
+    //Patrol
     public Transform[] walkPoints;
     private Transform targetPoint;
     private NavMeshAgent agent;
@@ -25,6 +26,7 @@ public class ProtoNPC : MonoBehaviour
     private bool IsWalking = true;
 
     private void Awake() {
+        sprite = transform.GetChild(0).gameObject;
         agent = Type == NPCType.walk ? GetComponent<NavMeshAgent>() : null;
     }
 
@@ -54,7 +56,7 @@ public class ProtoNPC : MonoBehaviour
 
     private void Update() {
         
-        // transform.rotation = Quaternion.Euler(Vector3.zero);
+        transform.rotation = Quaternion.Euler(Vector3.zero);
     
         if (Type == NPCType.idle)
             return;
