@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject sprite;
     [SerializeField] private bool canMove;
     [SerializeField] private bool canInteract;
+    [SerializeField] private bool onTeleport = false;
+
     private Ease flipEase;
     private float flipDuration;
     private float smooth;
@@ -51,6 +53,8 @@ public class PlayerController : MonoBehaviour
 
     public bool CanMove { get { return canMove; } set { canMove = value; } }
     public bool CanInteract { get { return canInteract; } set { canInteract = value; } }
+    public bool OnTeleport { get { return onTeleport; } set { onTeleport = value; } }
+
     public IInteractable Interactable { get; set; }
 
     void Awake()
@@ -72,6 +76,7 @@ public class PlayerController : MonoBehaviour
         canMove = true;
         canInteract = true;
         isRotate = false;
+        onTeleport = false;
         currentState = PlayerState.idle;
         currentFacing = PlayerFacing.down;
         currentDirection = PlayerDirection.left;
@@ -88,9 +93,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        GetInput();
-        SetSprite();
-        NotifRotation();
+        if (!onTeleport)
+        {
+            GetInput();
+            SetSprite();
+            NotifRotation();
+        }
     }
 
     void FixedUpdate()
@@ -115,13 +123,13 @@ public class PlayerController : MonoBehaviour
     public void SetAnimation(string Animation) => sprite.GetComponent<PlayerAnimation>().PlayAnimation(Animation);
     public void SetPlayerPos(Vector3 pos) => transform.position = pos;
     public Vector3 GetPlayerPos() => transform.position;
-    
+
     #region Movement
     private void Move()
     {
         if (!CanMove && !isRotate)
             return;
-        currentState = movement != Vector3.zero? PlayerState.walk : PlayerState.idle;
+        currentState = movement != Vector3.zero ? PlayerState.walk : PlayerState.idle;
         Vector3 targetPos = transform.position + (movement * speed * Time.deltaTime);
         transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref currentVelocity, smooth);
         SetAnimation(currentState.ToString() + "_" + currentFacing.ToString() + "_" + "left");
@@ -146,13 +154,14 @@ public class PlayerController : MonoBehaviour
     {
         if (movement == Vector3.zero)
             return;
-        
+
         if (movement.z > 0f)
             currentFacing = PlayerFacing.up;
         if (movement.z < 0f)
             currentFacing = PlayerFacing.down;
+
         string _anim = "walk" + "_" + currentFacing.ToString() + "_" + PlayerDirection.left;
-        SetAnimation(_anim);   
+        SetAnimation(_anim);
     }
 
     private void SpriteRotation()
