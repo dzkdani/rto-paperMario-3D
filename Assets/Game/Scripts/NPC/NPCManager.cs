@@ -26,7 +26,7 @@ public class NPCManager : MonoBehaviour
     private bool IsWalking = true;
 
     private void Awake() {
-        sprite = transform.GetChild(0).gameObject;
+        // sprite = transform.GetChild(0).gameObject;
         agent = Type == NPCType.walk ? GetComponent<NavMeshAgent>() : null;
     }
 

@@ -26,6 +26,7 @@ public class ProtoNPC : MonoBehaviour
 
     private void Awake() {
         agent = Type == NPCType.walk ? GetComponent<NavMeshAgent>() : null;
+        sprite = transform.GetChild(0).gameObject;
     }
 
     private void Start() {
@@ -48,6 +49,7 @@ public class ProtoNPC : MonoBehaviour
             {
                 targetPoint = walkPoints[1];
                 agent.SetDestination(targetPoint.position);
+                LookAtDestination();
             }
         }
     }
@@ -67,6 +69,35 @@ public class ProtoNPC : MonoBehaviour
                 StartCoroutine(WalkToNextPoint());
             }
         }
+    }
+
+    private void SetAnim(Vector2 vector)
+    {
+        Vector2 up = Vector2.up;
+        Vector2 down = Vector2.down;
+        Vector2 left = Vector2.left;
+        Vector2 right = Vector2.right;
+
+        if (vector.x > 0f)
+            sprite.GetComponent<Animator>().Play("walk_down_right");
+        if (vector.x < 0f)
+            sprite.GetComponent<Animator>().Play("walk_down_left");
+
+        // if (vector.x > 0f && vector.y < 0f)
+        //     sprite.GetComponent<Animator>().Play("walk_down_right");
+        // if (vector.x > 0f && vector.y > 0f)
+        //     sprite.GetComponent<Animator>().Play("walk_up_right");
+        // if (vector.x < 0f && vector.y < 0f)
+        //     sprite.GetComponent<Animator>().Play("walk_down_left");
+        // if (vector.x < 0f && vector.y > 0f)
+        //     sprite.GetComponent<Animator>().Play("walk_up_left");
+    }
+
+    private void LookAtDestination()
+    {
+        Debug.Log($"npc turn to {agent.destination.normalized.ToVector2()}");
+        SetAnim(agent.destination.normalized.ToVector2());
+
     }
 
     private IEnumerator WalkToNextPoint() {
@@ -97,7 +128,13 @@ public class ProtoNPC : MonoBehaviour
             targetPoint = walkPoints[walkPointIdx];
         }
         agent.SetDestination(targetPoint.position);
+        LookAtDestination();
         IsWalking = true;
     }
+}
+
+public static class Extention
+{
+    public static Vector2 ToVector2 (this Vector3 move) => new Vector2(move.x, move.z);
 }
 
