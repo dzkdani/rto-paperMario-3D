@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour
     public bool CanInteract { get { return canInteract; } set { canInteract = value; } }
     public bool OnTeleport { get { return onTeleport; } set { onTeleport = value; } }
 
+    public Transform cameraReferenceTarget;
     public IInteractable Interactable { get; set; }
 
     void Awake()
@@ -104,8 +105,13 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         Move();
+        SetCameraTargetPosition();
     }
 
+    void SetCameraTargetPosition()
+    {
+        cameraReferenceTarget.position = transform.position;
+    }
     private void GetInput()
     {
         horizontalMove = Input.GetAxis("Horizontal");
