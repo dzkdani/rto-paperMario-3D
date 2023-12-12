@@ -10,11 +10,11 @@ public enum NPCType
 
 public class ProtoNPC : MonoBehaviour
 {
-    [SerializeField] private GameObject sprite;
 
     //General
+    [Tooltip("NPC Components")]
+    private GameObject sprite;
     public NPCType Type;
- 
     //Movement
     public Transform[] walkPoints;
     private Transform targetPoint;
@@ -23,6 +23,7 @@ public class ProtoNPC : MonoBehaviour
     private bool reverseRoute = false;
     private bool IsEndRoute = false;
     private bool IsWalking = true;
+    private string lastFacing = "";
 
     private void Awake() {
         agent = Type == NPCType.walk ? GetComponent<NavMeshAgent>() : null;
@@ -56,8 +57,6 @@ public class ProtoNPC : MonoBehaviour
 
     private void Update() {
         
-        // transform.rotation = Quaternion.Euler(Vector3.zero);
-    
         if (Type == NPCType.idle)
             return;
 
@@ -73,19 +72,27 @@ public class ProtoNPC : MonoBehaviour
 
     private void SetAnim(Vector2 vector)
     {
-        Vector2 up = Vector2.up;
-        Vector2 down = Vector2.down;
-        Vector2 left = Vector2.left;
-        Vector2 right = Vector2.right;
+        if (vector == Vector2.zero)
+            return;
 
-        if (vector.x > 0f && vector.y < 0f)
+        if (vector.x >= 0f && vector.y <= 0f)
             sprite.GetComponent<Animator>().Play("walk_down_right");
-        if (vector.x > 0f && vector.y > 0f)
+        if (vector.x >= 0f && vector.y >= 0f)
             sprite.GetComponent<Animator>().Play("walk_up_right");
-        if (vector.x < 0f && vector.y < 0f)
+        if (vector.x <= 0f && vector.y <= 0f)
             sprite.GetComponent<Animator>().Play("walk_down_left");
-        if (vector.x < 0f && vector.y > 0f)
+        if (vector.x <= 0f && vector.y >= 0f)
             sprite.GetComponent<Animator>().Play("walk_up_left");
+
+        if (vector.x >= 0f)
+            lastFacing = "right";
+        else
+            lastFacing = "left";
+    }
+
+    private void CheckNPCFlip()
+    {
+        
     }
 
     private void LookAtDestination()

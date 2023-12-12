@@ -10,7 +10,6 @@ public class ProtoNPCAnim : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
-        // GetComponent<SpriteRenderer>().flipX = true;
         camRotY = Camera.main.transform.rotation.y;
     }
 
