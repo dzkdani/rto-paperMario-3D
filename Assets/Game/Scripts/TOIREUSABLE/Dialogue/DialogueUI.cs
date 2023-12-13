@@ -19,19 +19,23 @@ namespace TOI2D
         private int currentDialogIndex = 0;
         private Coroutine typingCoroutine;
 
-        public bool IsOpen { get; private set; }
         bool isTyping = false;
         bool showDialog = false;
 
-        public float typingSpeed = 0.05f;
-        public string[] dialogs;
+
         GameObject interactableNotifTemp = null;
-        public Dialogue dialogObj = null;
         Interactable interactableObject = null;
+        NPCManager npcManager = null;
+
         [SerializeField] Dialogue dialogObjTest;
         [SerializeField] RectTransform tearDrop;
         [SerializeField] RectTransform tearDropBackground;
         [SerializeField] GameObject tearDropReference;
+
+        public Dialogue dialogObj = null;
+        public float typingSpeed = 0.05f;
+        public string[] dialogs;
+        public bool IsOpen { get; private set; }
         private void Awake()
         {
 
@@ -85,7 +89,10 @@ namespace TOI2D
         void ShowDialog()
         {
             _textLabel.text = string.Empty;
-            SetPotrait(dialogObj.Dialogues[currentDialogIndex].characterId, dialogObj.potraitDatas);
+            //Set Character Ekspression
+            //if (npcManager != null)
+            //    npcManager.InitExpression(dialogObj.Dialogues[currentDialogIndex].expresionId);
+            //SetPotrait(dialogObj.Dialogues[currentDialogIndex].characterId, dialogObj.potraitDatas);
             typingCoroutine = StartCoroutine(TypeText(dialogObj.Dialogues[currentDialogIndex].Dialogue));
         }
         void ConvertnpcPositionToCanvas(GameObject target)
@@ -118,6 +125,16 @@ namespace TOI2D
             interactableNotifTemp = interactableNotif;
             this.interactableObject = interactableObject;
 
+            if (interactableObject.TryGetComponent<NPCManager>(out npcManager))
+            {
+                Debug.Log($"this IO were NPC, then npcManager were{npcManager}");
+            }
+            else
+            {
+                npcManager = null;
+                Debug.Log($"this IO were not NPC, then set npcManager value to {npcManager}");
+            }
+
             showDialog = true;
             dialogueBox.SetActive(true);
             ConvertnpcPositionToCanvas(interactableObject.gameObject);
@@ -144,7 +161,6 @@ namespace TOI2D
             _textLabel.text = string.Empty;
             GameplayManager.instance.player.CanMove = true;
             GameplayManager.instance.player.CanInteract = true;
-            //potrait.gameObject.SetActive(false);
             dialogueBox.SetActive(false);
 
             if (interactableNotifTemp != null)
@@ -154,6 +170,7 @@ namespace TOI2D
             dialogObj = null;
             interactableNotifTemp = null;
             interactableObject = null;
+            npcManager = null;
         }
 
         private void SetPotrait(string characterID = null, PotraitData[] potraitDatas = null)

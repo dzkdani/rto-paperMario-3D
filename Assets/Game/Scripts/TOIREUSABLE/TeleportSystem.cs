@@ -22,31 +22,55 @@ namespace TOI2D
         private Vector3 targetPos;
         UITransition uITransition;
         PlayerController player;
+        CameraController cameraController;
         float baseAnimationDuration = 0.25f;
 
         private void Start()
         {
             uITransition = FindObjectOfType<UITransition>();
             player = GameplayManager.instance.player;
+            cameraController = GameplayManager.instance.cameraController;
+
         }
-        public void PreparaTeleport(TeleportTarget target, Interactable io, TeleportPreparation[] preparationPos)
+        public void PreparaTeleport(TeleportTarget target, Interactable io, TeleportPreparation[] preparationPos, float teleRot = 0)
         {
             StartCoroutine(SetupTeleport(target, io, preparationPos));
         }
 
-        IEnumerator SetupTeleport(TeleportTarget target, Interactable io, TeleportPreparation[] preparationPos)
+        IEnumerator SetupTeleport(TeleportTarget target, Interactable io, TeleportPreparation[] preparationPos, float teleRot = 0)
         {
             player.CanInteract = false;
             player.CanMove = false;
             player.OnTeleport = true;
-            for (int i = 0; i < preparationPos.Length; i++)
+            switch (target)
             {
-                string animationTarget = CheckPlayerPositionToSetAnimation(preparationPos[i].target);
-                yield return StartCoroutine(MoveToTargetWithDuration(preparationPos[i].target, preparationPos[i].durationToTarget, animationTarget));
+                case TeleportTarget.Indoor:
+                    targetPos = io.GetTeleportPos().position;
+                    io.GetTeleportPos().GetComponent<Interactable>().SetLastPosition(GameplayManager.instance.player.GetPlayerPos());
+                    break;
+                case TeleportTarget.Outdoor:
+                    targetPos = io.GetLastPosition();
+                    break;
             }
-            yield return new WaitForSeconds(baseAnimationDuration);
-            InitTeleport(target, io);
+            cameraController.RotateCamera(teleRot, baseAnimationDuration * 4);
+            if (preparationPos.Length != 0)
+            {
+                for (int i = 0; i < preparationPos.Length; i++)
+                {
+                    string animationTarget = CheckPlayerPositionToSetAnimation(preparationPos[i].target);
+                    yield return StartCoroutine(MoveToTargetWithDuration(preparationPos[i].target, preparationPos[i].durationToTarget, animationTarget));
+                }
+                yield return new WaitForSeconds(baseAnimationDuration * 2);
+            }
+            else
+            {
+                yield return new WaitForSeconds(baseAnimationDuration * 6);
+            }
+            //Open Door
+
+            InitTeleport(target);
         }
+
 
         string CheckPlayerPositionToSetAnimation(Transform target)
         {
@@ -102,18 +126,8 @@ namespace TOI2D
             return Vector3.Distance(player.transform.position, target.transform.position);
         }
 
-        public void InitTeleport(TeleportTarget target, Interactable io)
+        public void InitTeleport(TeleportTarget target)
         {
-            switch (target)
-            {
-                case TeleportTarget.Indoor:
-                    targetPos = io.GetTeleportPos().position;
-                    io.GetTeleportPos().GetComponent<Interactable>().SetLastPosition(GameplayManager.instance.player.GetPlayerPos());
-                    break;
-                case TeleportTarget.Outdoor:
-                    targetPos = io.GetLastPosition();
-                    break;
-            }
             StartCoroutine(StartTeleport(target));
         }
 
@@ -137,7 +151,8 @@ namespace TOI2D
             //FindObjectOfType<CameraVirtualManager>().SetCamera();
 
             yield return new WaitForSeconds(teleportDelay);
-
+            cameraController.RotateCamera(0);
+            Debug.Log("set camera to 0 bias");
             yield return new WaitForSeconds(teleportDelay);
 
             if (uITransition != null)

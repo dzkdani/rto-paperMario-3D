@@ -7,7 +7,7 @@ public class GameplayManager : MonoBehaviour
     public PlayerController player;
     public TeleportSystem teleportSystem;
     public DialogueUI dialogueUI;
-
+    public CameraController cameraController;
     private void Awake()
     {
         if (instance != null && instance != this)

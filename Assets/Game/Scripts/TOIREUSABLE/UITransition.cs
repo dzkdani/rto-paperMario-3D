@@ -23,22 +23,22 @@ namespace TOI2D
             {
                 QuitGame();
             }
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                FadeOutFadeIn();
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                FadeOut(SceneManager.GetActiveScene().name);
-            }
-            if (Input.GetKeyDown(KeyCode.I))
-            {
-                FadeIn();
-            }
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                FadeOut();
-            }
+            //if (Input.GetKeyDown(KeyCode.E))
+            //{
+            //    FadeOutFadeIn();
+            //}
+            //if (Input.GetKeyDown(KeyCode.R))
+            //{
+            //    FadeOut(SceneManager.GetActiveScene().name);
+            //}
+            //if (Input.GetKeyDown(KeyCode.I))
+            //{
+            //    FadeIn();
+            //}
+            //if (Input.GetKeyDown(KeyCode.O))
+            //{
+            //    FadeOut();
+            //}
         }
         void QuitGame()
         {

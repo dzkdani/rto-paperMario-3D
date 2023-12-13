@@ -13,6 +13,7 @@ public class Interactable : MonoBehaviour, IInteractable
     public Vector3 lastpos;
     public TeleportPreparation[] preparationPosition;
     public TeleportTarget teleportTarget;
+    public float teleRotation;
     private GameplayManager gameplayManager;
 
     private void Start()
@@ -32,7 +33,7 @@ public class Interactable : MonoBehaviour, IInteractable
                 break;
             case InteractType.teleport:
                 if (GameplayManager.instance.teleportSystem != null)
-                    GameplayManager.instance.teleportSystem.PreparaTeleport(teleportTarget, this, preparationPosition);
+                    GameplayManager.instance.teleportSystem.PreparaTeleport(teleportTarget, this, preparationPosition, teleRotation);
                 break;
             case InteractType.other:
                 OnInteract = Test3;

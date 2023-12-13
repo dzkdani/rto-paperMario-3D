@@ -120,10 +120,10 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F) && CanInteract)
             Interact();
-        if (Input.GetKeyDown(KeyCode.Q))
-            Debug.Log($"Rot Cam to Left");
-        if (Input.GetKeyDown(KeyCode.E))
-            Debug.Log($"Rot Cam to Right");
+        //if (Input.GetKeyDown(KeyCode.Q))
+        //    Debug.Log($"Rot Cam to Left");
+        //if (Input.GetKeyDown(KeyCode.E))
+        //    Debug.Log($"Rot Cam to Right");
     }
 
     public void SetAnimation(string Animation) => sprite.GetComponent<PlayerAnimation>().PlayAnimation(Animation);
