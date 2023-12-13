@@ -1,4 +1,5 @@
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,6 +7,18 @@ public enum NPCType
 {
     walk,
     idle 
+}
+
+public enum NPCFacing
+{
+    left,
+    right
+}
+
+public enum NPCDirection
+{
+    up,
+    down
 }
 
 public class ProtoNPC : MonoBehaviour
@@ -24,6 +37,7 @@ public class ProtoNPC : MonoBehaviour
     private bool IsEndRoute = false;
     private bool IsWalking = true;
     private string lastFacing = "";
+    private string currFacing = "";
 
     private void Awake() {
         agent = Type == NPCType.walk ? GetComponent<NavMeshAgent>() : null;
@@ -75,19 +89,53 @@ public class ProtoNPC : MonoBehaviour
         if (vector == Vector2.zero)
             return;
 
-        if (vector.x >= 0f && vector.y <= 0f)
-            sprite.GetComponent<Animator>().Play("walk_down_right");
-        if (vector.x >= 0f && vector.y >= 0f)
-            sprite.GetComponent<Animator>().Play("walk_up_right");
-        if (vector.x <= 0f && vector.y <= 0f)
-            sprite.GetComponent<Animator>().Play("walk_down_left");
-        if (vector.x <= 0f && vector.y >= 0f)
-            sprite.GetComponent<Animator>().Play("walk_up_left");
+        
 
-        if (vector.x >= 0f)
+        if (vector.x >= 0f && vector.y <= 0f)
+        {
+            if (currFacing == "left")
+            {
+                RotateSprite();
+            }
+            sprite.GetComponent<Animator>().Play("walk_down_right");
             lastFacing = "right";
-        else
+            currFacing = "right";
+        }
+        if (vector.x >= 0f && vector.y >= 0f)
+        {
+            if (currFacing == "left")
+            {
+                RotateSprite();
+            }
+            sprite.GetComponent<Animator>().Play("walk_up_right");
+            lastFacing = "right";
+            currFacing = "right";
+        }
+        if (vector.x <= 0f && vector.y <= 0f)
+        {
+            if (currFacing == "right")
+            {
+                RotateSprite();
+            }
+            sprite.GetComponent<Animator>().Play("walk_down_left");
             lastFacing = "left";
+            currFacing = "left";
+        }
+        if (vector.x <= 0f && vector.y >= 0f)
+        {
+            if (currFacing == "right")
+            {
+                RotateSprite();
+            }
+            sprite.GetComponent<Animator>().Play("walk_up_left");
+            lastFacing = "left";
+            currFacing = "left";
+        }
+    }
+
+    private void RotateSprite()
+    {
+        sprite.transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), 0.75f).From(transform.rotation.eulerAngles).SetEase(Ease.InQuad);
     }
 
     private void CheckNPCFlip()
