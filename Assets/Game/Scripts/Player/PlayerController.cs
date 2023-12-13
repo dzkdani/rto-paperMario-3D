@@ -110,7 +110,9 @@ public class PlayerController : MonoBehaviour
 
     void SetCameraTargetPosition()
     {
-        cameraReferenceTarget.position = transform.position;
+        if (cameraReferenceTarget != null)
+            cameraReferenceTarget.position = transform.position;
+
     }
     private void GetInput()
     {

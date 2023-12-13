@@ -34,7 +34,7 @@ namespace TOI2D
         }
         public void PreparaTeleport(TeleportTarget target, Interactable io, TeleportPreparation[] preparationPos, float teleRot = 0)
         {
-            StartCoroutine(SetupTeleport(target, io, preparationPos));
+            StartCoroutine(SetupTeleport(target, io, preparationPos, teleRot));
         }
 
         IEnumerator SetupTeleport(TeleportTarget target, Interactable io, TeleportPreparation[] preparationPos, float teleRot = 0)

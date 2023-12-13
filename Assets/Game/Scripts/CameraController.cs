@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
     public CinemachineVirtualCamera RightCamera { get => rightCamera; set => rightCamera = value; }
     public CinemachineVirtualCamera IndoorCamera { get => indoorCamera; set => indoorCamera = value; }
 
-
+    [SerializeField] float rotationValue;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            RotateCamera(-180, 1);
+            RotateCamera(rotationValue, 1);
         }
     }
     public void RotateAroundCamera()
