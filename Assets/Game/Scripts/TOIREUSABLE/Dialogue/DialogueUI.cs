@@ -88,6 +88,7 @@ namespace TOI2D
 
         void ShowDialog()
         {
+            IsOpen = true;
             _textLabel.text = string.Empty;
             //Set Character Ekspression
             //if (npcManager != null)

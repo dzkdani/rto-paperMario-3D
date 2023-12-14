@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using System.Collections;
 using TOI2D;
 using UnityEngine;
 
@@ -8,70 +9,96 @@ public class Interactable : MonoBehaviour, IInteractable
     [SerializeField] private InteractType Type;
 
     public static event Action OnInteract;
+
+    [Tooltip("Interaction Components")]
     [SerializeField] private Dialogue dialogueObj;
     [SerializeField] private Transform teleportPos;
-    public Vector3 lastpos;
-    public TeleportPreparation[] preparationPosition;
-    public TeleportTarget teleportTarget;
-    public float teleRotation;
-    private GameplayManager gameplayManager;
+    [SerializeField] private Vector3 lastpos;
+    [SerializeField] private TeleportPreparation[] preparationPosition;
+    [SerializeField] private TeleportTarget teleportTarget;
+    [SerializeField] private float teleRotation;
 
-    private void Start()
+    private void InitInteractable(PlayerController player)
     {
-        //InitInteractable();
-    }
-
-    private void InitInteractable()
-    {
-        Debug.Log("Interact");
         switch (Type)
         {
             case InteractType.dialogue:
-                Test4();
-                if (GameplayManager.instance.dialogueUI != null)
-                    GameplayManager.instance.dialogueUI.InitDialogue(dialogueObj, null, this);
+                DialogueInteraction();
                 break;
             case InteractType.teleport:
-                if (GameplayManager.instance.teleportSystem != null)
-                    GameplayManager.instance.teleportSystem.PreparaTeleport(teleportTarget, this, preparationPosition, teleRotation);
+                TeleportInteraction();
+                break;
+            case InteractType.npc:
+                StartCoroutine(NPCInteraction(player));
                 break;
             case InteractType.other:
-                OnInteract = Test3;
+                Debug.Log("other interaction");
                 break;
         }
     }
 
-    public void Interact()
+    public void Interact(PlayerController player)
     {
-        //OnInteract?.Invoke();
-        InitInteractable();
+        InitInteractable(player);
     }
 
-    private void Test1()
+    private void DialogueInteraction()
     {
         Debug.Log("dialog interaction");
+        if (GameplayManager.instance.dialogueUI != null)
+            GameplayManager.instance.dialogueUI.InitDialogue(dialogueObj, null, this);
     }
 
-    private void Test2()
+    private void TeleportInteraction()
     {
         Debug.Log("teleport interaction");
+        if (GameplayManager.instance.teleportSystem != null)
+            GameplayManager.instance.teleportSystem.PreparaTeleport(teleportTarget, this, preparationPosition, teleRotation);
     }
 
-    private void Test3()
+    private IEnumerator NPCInteraction(PlayerController player)
     {
-        Debug.Log("other interaction");
-    }
-
-    private void Test4()
-    {
-        Debug.Log("npc interaction");
-        if (transform.GetChild(0).TryGetComponent<ProtoNPCAnim>(out ProtoNPCAnim npc))
+        if (TryGetComponent<NPCManager>(out NPCManager npc))
         {
-            npc.transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), 0.25f).From(transform.rotation.eulerAngles).SetEase(Ease.InQuad)
-                .OnComplete(() => { npc.GetComponent<SpriteRenderer>().flipX = true; });
-
-            npc.GetComponentInParent<ProtoNPC>().NPCInteractionTest();
+            Debug.Log("npc interaction");
+            npc.OnInteract = true;
+            npc.InitInteractionNPC();
+            if (npc.GetCurrentDirection() == Direction.left)
+            {
+                if (player.transform.position.x > transform.position.x)
+                    transform.GetChild(0).transform.FlipSprite(onComplete: DialogueInteraction);
+                else
+                    DialogueInteraction();
+            }
+            if (npc.GetCurrentDirection() == Direction.right)
+            {
+                if (player.transform.position.x < transform.position.x)
+                    transform.GetChild(0).transform.FlipSprite(onComplete: DialogueInteraction);
+                else
+                    DialogueInteraction();
+            }
+            
+            yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == true);
+            yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == false);
+            
+            npc.OnInteract = false;
+            if (npc.GetCurrentDirection() == Direction.left)
+            {
+                if (player.transform.position.x > transform.position.x)
+                    transform.GetChild(0).transform.FlipSprite(onComplete: npc.EndInteractionNPC);
+                else
+                    npc.EndInteractionNPC();
+            }
+            if (npc.GetCurrentDirection() == Direction.right)
+            {
+                if (player.transform.position.x < transform.position.x)
+                    transform.GetChild(0).transform.FlipSprite(onComplete: npc.EndInteractionNPC);
+                else
+                    npc.EndInteractionNPC();
+            }
         }
+        else
+            Debug.Log("no npc found");
     }
 
     public void SetLastPosition(Vector3 posTarget)
@@ -83,7 +110,6 @@ public class Interactable : MonoBehaviour, IInteractable
         Vector3 posTarget = lastpos;
         return posTarget;
     }
-
     public Transform GetTeleportPos()
     {
         return teleportPos;
