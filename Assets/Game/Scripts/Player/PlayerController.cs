@@ -1,13 +1,13 @@
 using DG.Tweening;
 using UnityEngine;
 
-public enum PlayerDirection
+public enum Direction
 {
     left,
     right
 }
 
-public enum PlayerFacing
+public enum Facing
 {
     up,
     down
@@ -23,16 +23,13 @@ public enum PlayerState
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Manager")]
-    [SerializeField] private GameManager gameManager;
-
     [Header("Data")]
     [SerializeField] private PlayerData PlayerData;
 
     [Header("Player Components")]
     [SerializeField] private PlayerState currentState;
-    [SerializeField] private PlayerDirection currentDirection;
-    [SerializeField] private PlayerFacing currentFacing;
+    [SerializeField] private Direction currentDirection;
+    [SerializeField] private Facing currentFacing;
     [SerializeField] private GameObject notifMark;
     [SerializeField] private GameObject sprite;
     [SerializeField] private bool canMove;
@@ -79,8 +76,8 @@ public class PlayerController : MonoBehaviour
         isRotate = false;
         onTeleport = false;
         currentState = PlayerState.idle;
-        currentFacing = PlayerFacing.down;
-        currentDirection = PlayerDirection.left;
+        currentFacing = Facing.down;
+        currentDirection = Direction.left;
         SetAnimation(currentState.ToString() + "_" + currentFacing.ToString() + "_" + currentDirection.ToString());
     }
 
@@ -138,9 +135,9 @@ public class PlayerController : MonoBehaviour
         if (!CanMove && !isRotate)
             return;
         currentState = movement != Vector3.zero ? PlayerState.walk : PlayerState.idle;
-        Vector3 targetPos = transform.position + (movement * speed * Time.deltaTime);
+        Vector3 targetPos = transform.position + (movement * speed);
         transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref currentVelocity, smooth);
-        SetAnimation(currentState.ToString() + "_" + currentFacing.ToString() + "_" + "left");
+        SetAnimation(currentState.ToString() + "_" + currentFacing.ToString() + "_" + Direction.left);
     }
     #endregion
 
@@ -164,11 +161,11 @@ public class PlayerController : MonoBehaviour
             return;
 
         if (movement.z > 0f)
-            currentFacing = PlayerFacing.up;
+            currentFacing = Facing.up;
         if (movement.z < 0f)
-            currentFacing = PlayerFacing.down;
+            currentFacing = Facing.down;
 
-        string _anim = "walk" + "_" + currentFacing.ToString() + "_" + PlayerDirection.left;
+        string _anim = "walk" + "_" + currentFacing.ToString() + "_" + Direction.left;
         SetAnimation(_anim);
     }
 
@@ -179,25 +176,25 @@ public class PlayerController : MonoBehaviour
         if (isRotate)
             return;
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) && !Input.GetKey(KeyCode.D))
         {
             //left dir
-            if (currentDirection == PlayerDirection.left)
+            if (currentDirection == Direction.left)
                 return;
             else
             {
-                currentDirection = PlayerDirection.left;
+                currentDirection = Direction.left;
                 RotateSprite();
             }
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D) && !Input.GetKey(KeyCode.A))
         {
             //right dir
-            if (currentDirection == PlayerDirection.right)
+            if (currentDirection == Direction.right)
                 return;
             else
             {
-                currentDirection = PlayerDirection.right;
+                currentDirection = Direction.right;
                 RotateSprite();
             }
         }
@@ -213,8 +210,12 @@ public class PlayerController : MonoBehaviour
 
     private void Interact()
     {
-        Interactable?.Interact();
+        Interactable?.Interact(this);
     }
+
+    public Facing GetCurrentFacing() => currentFacing;
+
+    public Direction GetCurrentDirection() => currentDirection;
 
     private void OnTriggerEnter(Collider other)
     {
