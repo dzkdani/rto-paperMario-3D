@@ -99,8 +99,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Type: 0
+  direction: 0
+  facing: 1
   OnInteract: 0
-  walkPoints: []
+  walkPoints:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &4133140930938967836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab601e9d14a247e4792d9bade8fa7349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Type: 0
+  Type: 2
   dialogueObj: {fileID: 11400000, guid: 2815dab962be32a4483a115183fec886, type: 2}
   teleportPos: {fileID: 0}
   lastpos: {x: 0, y: 0, z: 0}

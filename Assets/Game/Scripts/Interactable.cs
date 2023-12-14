@@ -6,10 +6,7 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour, IInteractable
 {
-    [SerializeField] private InteractType Type;
-
-    public static event Action OnInteract;
-
+    public InteractType Type;
     [Tooltip("Interaction Components")]
     [SerializeField] private Dialogue dialogueObj;
     [SerializeField] private Transform teleportPos;
@@ -58,10 +55,9 @@ public class Interactable : MonoBehaviour, IInteractable
 
     private IEnumerator NPCInteraction(PlayerController player)
     {
+        Debug.Log("npc interaction");
         if (TryGetComponent<NPCManager>(out NPCManager npc))
         {
-            Debug.Log("npc interaction");
-            npc.OnInteract = true;
             npc.InitInteractionNPC();
             if (npc.GetCurrentDirection() == Direction.left)
             {
@@ -81,7 +77,6 @@ public class Interactable : MonoBehaviour, IInteractable
             yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == true);
             yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == false);
             
-            npc.OnInteract = false;
             if (npc.GetCurrentDirection() == Direction.left)
             {
                 if (player.transform.position.x > transform.position.x)

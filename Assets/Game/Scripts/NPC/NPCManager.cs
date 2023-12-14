@@ -33,6 +33,7 @@ public class NPCManager : MonoBehaviour
         sprite = transform.GetChild(0).gameObject;
         agent = Type == NPCType.walk ? GetComponent<NavMeshAgent>() : null;
         anim = sprite.GetComponent<Animator>();
+        GetComponent<Interactable>().Type = InteractType.npc;
     }
 
     private void Start() {
@@ -73,17 +74,21 @@ public class NPCManager : MonoBehaviour
 #region Interaction
     public void InitInteractionNPC()
     {
+        OnInteract = true;
         agent.isStopped = true;
         anim.Play("idle_down_left");
     }
 
     public void EndInteractionNPC()
     {
+        OnInteract = false;
         agent.isStopped = false;
         anim.Play("walk_down_left");
     }
+
     public Direction GetCurrentDirection() => direction;
     public Facing GetCurrentFacing() => facing;
+    
 #endregion
 
 #region Patrol

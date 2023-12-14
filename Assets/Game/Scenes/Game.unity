@@ -3153,16 +3153,6 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3705020890032463899, guid: b905c5c971d4f2f4d99e0587be22e526,
         type: 3}
-      propertyPath: facing
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3705020890032463899, guid: b905c5c971d4f2f4d99e0587be22e526,
-        type: 3}
-      propertyPath: walkPoints.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3705020890032463899, guid: b905c5c971d4f2f4d99e0587be22e526,
-        type: 3}
       propertyPath: walkPoints.Array.data[0]
       value: 
       objectReference: {fileID: 1167967797}
@@ -3171,11 +3161,6 @@ PrefabInstance:
       propertyPath: walkPoints.Array.data[1]
       value: 
       objectReference: {fileID: 1466154036}
-    - target: {fileID: 3705020890032463899, guid: b905c5c971d4f2f4d99e0587be22e526,
-        type: 3}
-      propertyPath: walkPoints.Array.data[2]
-      value: 
-      objectReference: {fileID: 1167967797}
     - target: {fileID: 4133140930938967834, guid: b905c5c971d4f2f4d99e0587be22e526,
         type: 3}
       propertyPath: m_Name
@@ -3236,21 +3221,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4133140930938967836, guid: b905c5c971d4f2f4d99e0587be22e526,
-        type: 3}
-      propertyPath: Type
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4133140930938967837, guid: b905c5c971d4f2f4d99e0587be22e526,
-        type: 3}
-      propertyPath: walkPoints.Array.data[0]
-      value: 
-      objectReference: {fileID: 1466154036}
-    - target: {fileID: 4133140930938967837, guid: b905c5c971d4f2f4d99e0587be22e526,
-        type: 3}
-      propertyPath: walkPoints.Array.data[1]
-      value: 
-      objectReference: {fileID: 1167967797}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b905c5c971d4f2f4d99e0587be22e526, type: 3}
 --- !u!1001 &7503932528597131881
@@ -3561,12 +3531,12 @@ PrefabInstance:
     - target: {fileID: 7503932530206241845, guid: 83687c044abca5841a127e8f09619007,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.000000016637882
+      value: 0.000000016637877
       objectReference: {fileID: 0}
     - target: {fileID: 7503932530206241845, guid: 83687c044abca5841a127e8f09619007,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.0000000043864095
+      value: 0.000000004386409
       objectReference: {fileID: 0}
     - target: {fileID: 7503932530206241845, guid: 83687c044abca5841a127e8f09619007,
         type: 3}
