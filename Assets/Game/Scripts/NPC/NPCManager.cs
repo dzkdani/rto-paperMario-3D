@@ -2,10 +2,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum NPCType 
+public enum NPCType
 {
     walk,
-    idle 
+    idle
 }
 
 [RequireComponent(typeof(Interactable))]
@@ -17,7 +17,11 @@ public class NPCManager : MonoBehaviour
     public NPCType Type;
     [SerializeField] private Direction direction;
     [SerializeField] private Facing facing = Facing.down;
+    [SerializeField] public Facing dialogFacing = Facing.down;
     public bool OnInteract = false;
+    public GameObject expressionObject;
+    Animator expressionObjectAnimator;
+    PlayerController player;
     //Patrol
     public Transform[] walkPoints;
     private Transform targetPoint;
@@ -29,14 +33,19 @@ public class NPCManager : MonoBehaviour
     private bool IsWalking = true;
     private Animator anim;
 
-    private void Awake() {
+    private void Awake()
+    {
         sprite = transform.GetChild(0).gameObject;
         agent = Type == NPCType.walk ? GetComponent<NavMeshAgent>() : null;
         anim = sprite.GetComponent<Animator>();
         GetComponent<Interactable>().Type = InteractType.npc;
     }
 
-    private void Start() {
+    private void Start()
+    {
+        player = GameplayManager.instance.player;
+        expressionObjectAnimator = expressionObject.GetComponentInChildren<Animator>();
+        expressionObject.gameObject.SetActive(false);
         InitNPC();
     }
 
@@ -54,8 +63,9 @@ public class NPCManager : MonoBehaviour
         }
     }
 
-    private void Update() {
-        
+    private void Update()
+    {
+
         transform.rotation = Quaternion.Euler(Vector3.zero);
 
         if (Type == NPCType.idle)
@@ -63,7 +73,7 @@ public class NPCManager : MonoBehaviour
 
         if (targetPoint != null)
         {
-            if(Vector3.Distance(transform.position, targetPoint.position) <= 1f && IsWalking)
+            if (Vector3.Distance(transform.position, targetPoint.position) <= 1f && IsWalking)
             {
                 IsWalking = false;
                 StartCoroutine(WalkToNextPoint());
@@ -71,28 +81,60 @@ public class NPCManager : MonoBehaviour
         }
     }
 
-#region Interaction
+    public void InitExpression(string exspression)
+    {
+        Debug.Log($"init Expression {expressionObjectAnimator.gameObject.name} with {exspression}");
+        expressionObject.gameObject.SetActive(true);
+        expressionObjectAnimator.Play(exspression);
+        if (dialogFacing != Facing.down)
+        {
+            anim.Play("behind_LB");
+        }
+        else
+        {
+            if (exspression != "calm")
+            {
+                anim.Play(exspression + "_LF");
+            }
+            else
+            {
+                anim.Play("calm_LF");
+            }
+
+        }
+    }
+
+    #region Interaction
     public void InitInteractionNPC()
     {
         OnInteract = true;
-        agent.isStopped = true;
+        if (agent != null)
+            agent.isStopped = true;
         anim.Play("idle_down_left");
+        //anim.Play("Idle");
     }
 
     public void EndInteractionNPC()
     {
         OnInteract = false;
-        agent.isStopped = false;
-        anim.Play("walk_down_left");
+        if (agent != null)
+            agent.isStopped = false;
+        expressionObject.gameObject.SetActive(false);
+
+        if (Type != NPCType.idle)
+            anim.Play("walk_down_left");
+        else
+            anim.Play("idle_down_left");
     }
 
     public Direction GetCurrentDirection() => direction;
     public Facing GetCurrentFacing() => facing;
-    
-#endregion
 
-#region Patrol
-    private IEnumerator WalkToNextPoint() {
+    #endregion
+
+    #region Patrol
+    private IEnumerator WalkToNextPoint()
+    {
         if (!reverseRoute)
             walkPointIdx++;
 
@@ -124,7 +166,7 @@ public class NPCManager : MonoBehaviour
         IsWalking = true;
     }
 
-    private void LookAtTargetDir(Vector2 destination) 
+    private void LookAtTargetDir(Vector2 destination)
     {
         Debug.Log($"npc next target : {destination}");
         if (destination == Vector2.left)
@@ -140,18 +182,18 @@ public class NPCManager : MonoBehaviour
         if (vector.x >= 0f)
         {
             if (direction == Direction.left)
-                sprite.transform.FlipSprite(onComplete: ()=> {Debug.Log("FinishFlip");});
+                sprite.transform.FlipSprite(onComplete: () => { Debug.Log("FinishFlip"); });
             direction = Direction.right;
         }
         if (vector.x <= 0f)
         {
             if (direction == Direction.right)
-                sprite.transform.FlipSprite(onComplete: ()=> {Debug.Log("FinishFlip");});
+                sprite.transform.FlipSprite(onComplete: () => { Debug.Log("FinishFlip"); });
             direction = Direction.left;
         }
         facing = Facing.down;
         anim.Play("walk_down_left");
     }
-#endregion
+    #endregion
 }
 

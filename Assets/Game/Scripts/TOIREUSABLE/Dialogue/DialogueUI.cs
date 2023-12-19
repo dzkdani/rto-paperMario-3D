@@ -91,8 +91,8 @@ namespace TOI2D
             IsOpen = true;
             _textLabel.text = string.Empty;
             //Set Character Ekspression
-            //if (npcManager != null)
-            //    npcManager.InitExpression(dialogObj.Dialogues[currentDialogIndex].expresionId);
+            if (npcManager != null)
+                npcManager.InitExpression(dialogObj.Dialogues[currentDialogIndex].expresionId);
             //SetPotrait(dialogObj.Dialogues[currentDialogIndex].characterId, dialogObj.potraitDatas);
             typingCoroutine = StartCoroutine(TypeText(dialogObj.Dialogues[currentDialogIndex].Dialogue));
         }
@@ -166,6 +166,9 @@ namespace TOI2D
 
             if (interactableNotifTemp != null)
                 interactableNotifTemp.SetActive(true);
+
+            if (npcManager != null)
+                npcManager.EndInteractionNPC();
 
             showDialog = false;
             dialogObj = null;

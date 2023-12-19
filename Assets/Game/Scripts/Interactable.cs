@@ -1,5 +1,3 @@
-using DG.Tweening;
-using System;
 using System.Collections;
 using TOI2D;
 using UnityEngine;
@@ -59,6 +57,14 @@ public class Interactable : MonoBehaviour, IInteractable
         if (TryGetComponent<NPCManager>(out NPCManager npc))
         {
             npc.InitInteractionNPC();
+            if (player.transform.position.z > transform.position.z)
+                npc.dialogFacing = Facing.up;
+            else
+                npc.dialogFacing = Facing.down;
+
+
+
+
             if (npc.GetCurrentDirection() == Direction.left)
             {
                 if (player.transform.position.x > transform.position.x)
@@ -73,10 +79,10 @@ public class Interactable : MonoBehaviour, IInteractable
                 else
                     DialogueInteraction();
             }
-            
+
             yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == true);
             yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == false);
-            
+
             if (npc.GetCurrentDirection() == Direction.left)
             {
                 if (player.transform.position.x > transform.position.x)
