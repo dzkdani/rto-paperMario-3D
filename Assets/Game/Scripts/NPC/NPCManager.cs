@@ -107,16 +107,15 @@ public class NPCManager : MonoBehaviour
     #region Interaction
     public void InitInteractionNPC()
     {
-        OnInteract = true;
         if (agent != null)
             agent.isStopped = true;
         anim.Play("idle_down_left");
+        OnInteract = true;
         //anim.Play("Idle");
     }
 
     public void EndInteractionNPC()
     {
-        OnInteract = false;
         if (agent != null)
             agent.isStopped = false;
         expressionObject.gameObject.SetActive(false);
@@ -125,6 +124,7 @@ public class NPCManager : MonoBehaviour
             anim.Play("walk_down_left");
         else
             anim.Play("idle_down_left");
+        OnInteract = false;
     }
 
     public Direction GetCurrentDirection() => direction;

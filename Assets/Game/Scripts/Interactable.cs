@@ -56,46 +56,46 @@ public class Interactable : MonoBehaviour, IInteractable
         Debug.Log("npc interaction");
         if (TryGetComponent<NPCManager>(out NPCManager npc))
         {
-            npc.InitInteractionNPC();
-            if (player.transform.position.z > transform.position.z)
-                npc.dialogFacing = Facing.up;
-            else
-                npc.dialogFacing = Facing.down;
-
-
-
-
-            if (npc.GetCurrentDirection() == Direction.left)
+            if (!npc.OnInteract)
             {
-                if (player.transform.position.x > transform.position.x)
-                    transform.GetChild(0).transform.FlipSprite(onComplete: DialogueInteraction);
+                npc.InitInteractionNPC();
+                if (player.transform.position.z > transform.position.z)
+                    npc.dialogFacing = Facing.up;
                 else
-                    DialogueInteraction();
-            }
-            if (npc.GetCurrentDirection() == Direction.right)
-            {
-                if (player.transform.position.x < transform.position.x)
-                    transform.GetChild(0).transform.FlipSprite(onComplete: DialogueInteraction);
-                else
-                    DialogueInteraction();
-            }
+                    npc.dialogFacing = Facing.down;
 
-            yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == true);
-            yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == false);
+                if (npc.GetCurrentDirection() == Direction.left)
+                {
+                    if (player.transform.position.x > transform.position.x)
+                        transform.GetChild(0).transform.FlipSprite(onComplete: DialogueInteraction);
+                    else
+                        DialogueInteraction();
+                }
+                if (npc.GetCurrentDirection() == Direction.right)
+                {
+                    if (player.transform.position.x < transform.position.x)
+                        transform.GetChild(0).transform.FlipSprite(onComplete: DialogueInteraction);
+                    else
+                        DialogueInteraction();
+                }
 
-            if (npc.GetCurrentDirection() == Direction.left)
-            {
-                if (player.transform.position.x > transform.position.x)
-                    transform.GetChild(0).transform.FlipSprite(onComplete: npc.EndInteractionNPC);
-                else
-                    npc.EndInteractionNPC();
-            }
-            if (npc.GetCurrentDirection() == Direction.right)
-            {
-                if (player.transform.position.x < transform.position.x)
-                    transform.GetChild(0).transform.FlipSprite(onComplete: npc.EndInteractionNPC);
-                else
-                    npc.EndInteractionNPC();
+                yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == true);
+                yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == false);
+
+                if (npc.GetCurrentDirection() == Direction.left)
+                {
+                    if (player.transform.position.x > transform.position.x)
+                        transform.GetChild(0).transform.FlipSprite(onComplete: npc.EndInteractionNPC);
+                    else
+                        npc.EndInteractionNPC();
+                }
+                if (npc.GetCurrentDirection() == Direction.right)
+                {
+                    if (player.transform.position.x < transform.position.x)
+                        transform.GetChild(0).transform.FlipSprite(onComplete: npc.EndInteractionNPC);
+                    else
+                        npc.EndInteractionNPC();
+                }
             }
         }
         else

@@ -58,6 +58,7 @@ namespace TOI2D
                 for (int i = 0; i < preparationPos.Length; i++)
                 {
                     string animationTarget = CheckPlayerPositionToSetAnimation(preparationPos[i].target);
+
                     yield return StartCoroutine(MoveToTargetWithDuration(preparationPos[i].target, preparationPos[i].durationToTarget, animationTarget));
                 }
                 yield return new WaitForSeconds(baseAnimationDuration * 2);
@@ -84,7 +85,7 @@ namespace TOI2D
                 }
                 if (player.transform.position.x < target.transform.position.x)
                 {
-                    animation = "walk_up_right";
+                    animation = "walk_up_left";
                 }
             }
             else
@@ -95,7 +96,7 @@ namespace TOI2D
                 }
                 if (player.transform.position.x < target.transform.position.x)
                 {
-                    animation = "walk_down_right";
+                    animation = "walk_down_left";
                 }
             }
 
