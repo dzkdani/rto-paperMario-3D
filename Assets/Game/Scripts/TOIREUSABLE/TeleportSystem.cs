@@ -52,6 +52,7 @@ namespace TOI2D
                     targetPos = io.GetLastPosition();
                     break;
             }
+            Debug.Log("Rotate");
             cameraController.RotateCamera(teleRot, baseAnimationDuration * 4);
             if (preparationPos.Length != 0)
             {

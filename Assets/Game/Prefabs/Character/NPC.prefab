@@ -102,6 +102,7 @@ MonoBehaviour:
   Type: 0
   direction: 0
   facing: 1
+  dialogFacing: 1
   OnInteract: 0
   expressionObject: {fileID: 2183090029682231733}
   walkPoints:
@@ -255,13 +256,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4339911930863705708, guid: 7de921b2efdb53246a0c7133d8760cbd,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339911930863705708, guid: 7de921b2efdb53246a0c7133d8760cbd,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4339911930863705708, guid: 7de921b2efdb53246a0c7133d8760cbd,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.81
+      value: -0.8100014
       objectReference: {fileID: 0}
     - target: {fileID: 4339911930863705708, guid: 7de921b2efdb53246a0c7133d8760cbd,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.78
+      value: 5.7800007
       objectReference: {fileID: 0}
     - target: {fileID: 4339911930863705708, guid: 7de921b2efdb53246a0c7133d8760cbd,
         type: 3}
@@ -276,17 +287,17 @@ PrefabInstance:
     - target: {fileID: 4339911930863705708, guid: 7de921b2efdb53246a0c7133d8760cbd,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4339911930863705708, guid: 7de921b2efdb53246a0c7133d8760cbd,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4339911930863705708, guid: 7de921b2efdb53246a0c7133d8760cbd,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4339911930863705708, guid: 7de921b2efdb53246a0c7133d8760cbd,
         type: 3}

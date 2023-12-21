@@ -58,7 +58,6 @@ public class Interactable : MonoBehaviour, IInteractable
         {
             if (!npc.OnInteract)
             {
-                npc.InitInteractionNPC();
                 if (player.transform.position.z > transform.position.z)
                     npc.dialogFacing = Facing.up;
                 else
@@ -78,6 +77,7 @@ public class Interactable : MonoBehaviour, IInteractable
                     else
                         DialogueInteraction();
                 }
+                npc.InitInteractionNPC();
 
                 yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == true);
                 yield return new WaitUntil(() => GameplayManager.instance.dialogueUI.IsOpen == false);
@@ -96,6 +96,7 @@ public class Interactable : MonoBehaviour, IInteractable
                     else
                         npc.EndInteractionNPC();
                 }
+                npc.EndInteractionNPC();
             }
         }
         else
