@@ -22,7 +22,7 @@ public class CameraController : MonoBehaviour
     }
 
     [SerializeField] CinemachineVirtualCamera virtualCamera;
-    [SerializeField] CameraPriorityLocation vcamLoc;
+    public CameraPriorityLocation vcamLoc;
     public TeleportTarget cameraState;
 
     public VirtualIndoorCamera[] virtualIndoorCameras;
@@ -72,12 +72,48 @@ public class CameraController : MonoBehaviour
         }
         else
         {
+            SwicthCamera(VirtualCamera, 0);
+            if (vcamLoc == CameraPriorityLocation.indoor1)
+            {
+                SwicthCamera(virtualIndoorCameras[0].indoorBase, 10);
+                SwicthCamera(virtualIndoorCameras[1].indoorBase, 0);
+                SwicthCamera(virtualIndoorCameras[2].indoorBase, 0);
 
+            }
+            else if (vcamLoc == CameraPriorityLocation.indoor2)
+            {
+                SwicthCamera(virtualIndoorCameras[1].indoorBase, 10);
+                SwicthCamera(virtualIndoorCameras[0].indoorBase, 0);
+                SwicthCamera(virtualIndoorCameras[2].indoorBase, 0);
+
+            }
+            else if (vcamLoc == CameraPriorityLocation.indoor3)
+            {
+                SwicthCamera(virtualIndoorCameras[2].indoorBase, 10);
+                SwicthCamera(virtualIndoorCameras[0].indoorBase, 0);
+                SwicthCamera(virtualIndoorCameras[1].indoorBase, 0);
+
+            }
         }
     }
-    public void ChangeCamera()
-    {
 
+    public void indoorToOutdoor()
+    {
+        if (vcamLoc == CameraPriorityLocation.indoor1)
+        {
+            SwicthCamera(virtualIndoorCameras[0].indoorBase, 0);
+            SwicthCamera(virtualIndoorCameras[0].indoorSide, 10);
+        }
+        if (vcamLoc == CameraPriorityLocation.indoor2)
+        {
+            SwicthCamera(virtualIndoorCameras[1].indoorBase, 0);
+            SwicthCamera(virtualIndoorCameras[1].indoorSide, 10);
+        }
+        if (vcamLoc == CameraPriorityLocation.indoor3)
+        {
+            SwicthCamera(virtualIndoorCameras[2].indoorBase, 0);
+            SwicthCamera(virtualIndoorCameras[2].indoorSide, 10);
+        }
     }
 
     public void SwicthCamera(CinemachineVirtualCamera target, int priorityTarget)

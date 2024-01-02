@@ -54,6 +54,10 @@ namespace TOI2D
             }
             Debug.Log("Rotate");
             cameraController.RotateCamera(teleRot, baseAnimationDuration * 4);
+
+            if (target == TeleportTarget.Outdoor)
+                GameplayManager.instance.cameraController.indoorToOutdoor();
+
             if (preparationPos.Length != 0)
             {
                 for (int i = 0; i < preparationPos.Length; i++)
@@ -147,6 +151,7 @@ namespace TOI2D
             yield return new WaitForSeconds(baseAnimationDuration * 2);
 
 
+            GameplayManager.instance.cameraController.SetupCamera();
             //_player.CanMove = false;
             //Debug.Log(_player.canMove);
             //_player.RecalculatingBoundary();
@@ -154,10 +159,6 @@ namespace TOI2D
 
             yield return new WaitForSeconds(teleportDelay);
             cameraController.RotateCamera(0);
-
-            if (cameraController.cameraState == TeleportTarget.Indoor)
-                cameraController.ChangeCamera();
-
             Debug.Log("set camera to 0 bias");
             yield return new WaitForSeconds(teleportDelay);
 

@@ -11,6 +11,7 @@ public class Interactable : MonoBehaviour, IInteractable
     [SerializeField] private Vector3 lastpos;
     [SerializeField] private TeleportPreparation[] preparationPosition;
     [SerializeField] private TeleportTarget teleportTarget;
+    [SerializeField] private CameraPriorityLocation indoorLocation;
     [SerializeField] private int cameraVirtualValue;
     [SerializeField] private float teleRotation;
 
@@ -51,6 +52,19 @@ public class Interactable : MonoBehaviour, IInteractable
         Debug.Log("teleport interaction");
         if (GameplayManager.instance.teleportSystem != null)
             GameplayManager.instance.teleportSystem.PreparaTeleport(teleportTarget, this, preparationPosition, teleRotation);
+        if (teleportTarget == TeleportTarget.Indoor)
+        {
+            GameplayManager.instance.cameraController.cameraState = TeleportTarget.Indoor;
+            GameplayManager.instance.cameraController.vcamLoc = indoorLocation;
+        }
+
+        if (teleportTarget == TeleportTarget.Outdoor)
+        {
+            GameplayManager.instance.cameraController.cameraState = TeleportTarget.Outdoor;
+            GameplayManager.instance.cameraController.vcamLoc = CameraPriorityLocation.none;
+
+        }
+
     }
 
     private IEnumerator NPCInteraction(PlayerController player)
