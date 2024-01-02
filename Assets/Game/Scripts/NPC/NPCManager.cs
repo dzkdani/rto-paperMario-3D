@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
@@ -61,6 +62,11 @@ public class NPCManager : MonoBehaviour
                 LookAtTargetDir(agent.destination.normalized.ToVector2());
             }
         }
+        else
+        {
+            InitRotateSprite();
+            anim.Play("idle_down_left");
+        }
     }
 
     private void Update()
@@ -103,6 +109,20 @@ public class NPCManager : MonoBehaviour
 
         }
     }
+
+    void InitRotateSprite()
+    {
+        if (direction == Direction.left)
+        {
+            transform.GetChild(0).transform.DORotate(new Vector3(0, 0, 0), 0.4f).From(transform.rotation.eulerAngles).SetEase(Ease.InQuad);
+        }
+        if (direction == Direction.right)
+        {
+            transform.GetChild(0).transform.DORotate(new Vector3(0, transform.eulerAngles.y + 180f, 0), 0.4f).From(transform.rotation.eulerAngles).SetEase(Ease.InQuad);
+        }
+    }
+
+    public void SetInteraction(bool val) { OnInteract = val; }
 
     #region Interaction
     public void InitInteractionNPC()

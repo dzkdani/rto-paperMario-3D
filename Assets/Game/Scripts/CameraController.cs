@@ -1,25 +1,38 @@
 using Cinemachine;
 using DG.Tweening;
-using System.Collections;
+using TOI2D;
 using UnityEngine;
+
+[System.Serializable]
+public enum CameraPriorityLocation
+{
+    none,
+    indoor1,
+    indoor2,
+    indoor3
+}
+
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] CinemachineVirtualCamera frontCamera;
-    [SerializeField] CinemachineVirtualCamera backCamera;
-    [SerializeField] CinemachineVirtualCamera leftCamera;
-    [SerializeField] CinemachineVirtualCamera rightCamera;
-    [SerializeField] CinemachineVirtualCamera indoorCamera;
+    [System.Serializable]
+    public struct VirtualIndoorCamera
+    {
+        public CinemachineVirtualCamera indoorBase;
+        public CinemachineVirtualCamera indoorSide;
+    }
 
-    public CinemachineVirtualCamera FrontCamera { get => frontCamera; set => frontCamera = value; }
-    public CinemachineVirtualCamera BackCamera { get => backCamera; set => backCamera = value; }
-    public CinemachineVirtualCamera LeftCamera { get => leftCamera; set => leftCamera = value; }
-    public CinemachineVirtualCamera RightCamera { get => rightCamera; set => rightCamera = value; }
-    public CinemachineVirtualCamera IndoorCamera { get => indoorCamera; set => indoorCamera = value; }
+    [SerializeField] CinemachineVirtualCamera virtualCamera;
+    [SerializeField] CameraPriorityLocation vcamLoc;
+    public TeleportTarget cameraState;
+
+    public VirtualIndoorCamera[] virtualIndoorCameras;
+    public CinemachineVirtualCamera VirtualCamera { get => virtualCamera; set => virtualCamera = value; }
 
     [SerializeField] float rotationValue;
     // Start is called before the first frame update
     void Start()
     {
+        InitCamera();
     }
 
     // Update is called once per frame
@@ -38,45 +51,54 @@ public class CameraController : MonoBehaviour
     {
 
     }
-    public void SwicthCamera(CinemachineVirtualCamera current, CinemachineVirtualCamera after)
-    {
-        current.Priority = 0;
-        after.Priority = 10;
 
+    public void InitCamera()
+    {
+        cameraState = TeleportTarget.Outdoor;
+        SetupCamera();
+    }
+
+    public void SetupCamera()
+    {
+        if (cameraState == TeleportTarget.Outdoor)
+        {
+            SwicthCamera(VirtualCamera, 10);
+
+            for (int i = 0; i < virtualIndoorCameras.Length; i++)
+            {
+                SwicthCamera(virtualIndoorCameras[i].indoorBase, 0);
+                SwicthCamera(virtualIndoorCameras[i].indoorSide, 0);
+            }
+        }
+        else
+        {
+
+        }
+    }
+    public void ChangeCamera()
+    {
+
+    }
+
+    public void SwicthCamera(CinemachineVirtualCamera target, int priorityTarget)
+    {
+        if (target != null)
+            target.Priority = priorityTarget;
     }
 
     public void RotateCamera(float value, float duration = 0)
     {
-        DOTween.To(() => FrontCamera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_Heading.m_Bias,
-            x => FrontCamera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_Heading.m_Bias = x,
-            value, duration).SetEase(Ease.InQuad);
-
-        //StartCoroutine(RotateCameraIncrementValue(value, duration));
-    }
-    IEnumerator RotateCameraIncrementValue(float target, float t)
-    {
-        float value = 0;
-        float time = t * Time.deltaTime;
-        // Loop selama nilai belum mencapai target
-        while (value < target)
+        if (cameraState == TeleportTarget.Outdoor)
         {
-            // Hitung nilai baru
-            value += (target - value) / time;
-            FrontCamera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_Heading.m_Bias = value;
-
-            // Cek apakah nilai sudah mencapai target
-            if (value >= target)
-            {
-                // Hentikan loop
-                break;
-            }
-
-            // Tampilkan nilai saat ini
-            Debug.Log(value);
-
-            // Tunda coroutine
-            yield return null;
+            Debug.Log("Rotate value " + value + " with duration " + duration);
+            DOTween.To(() => VirtualCamera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_Heading.m_Bias,
+                x => VirtualCamera.GetCinemachineComponent<CinemachineOrbitalTransposer>().m_Heading.m_Bias = x,
+                value, duration).SetEase(Ease.InQuad);
         }
-    }
+        else
+        {
 
+        }
+
+    }
 }

@@ -154,6 +154,10 @@ namespace TOI2D
 
             yield return new WaitForSeconds(teleportDelay);
             cameraController.RotateCamera(0);
+
+            if (cameraController.cameraState == TeleportTarget.Indoor)
+                cameraController.ChangeCamera();
+
             Debug.Log("set camera to 0 bias");
             yield return new WaitForSeconds(teleportDelay);
 

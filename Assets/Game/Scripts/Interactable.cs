@@ -11,6 +11,7 @@ public class Interactable : MonoBehaviour, IInteractable
     [SerializeField] private Vector3 lastpos;
     [SerializeField] private TeleportPreparation[] preparationPosition;
     [SerializeField] private TeleportTarget teleportTarget;
+    [SerializeField] private int cameraVirtualValue;
     [SerializeField] private float teleRotation;
 
     private void InitInteractable(PlayerController player)
@@ -21,7 +22,8 @@ public class Interactable : MonoBehaviour, IInteractable
                 DialogueInteraction();
                 break;
             case InteractType.teleport:
-                TeleportInteraction();
+                TeleportInteraction(teleportTarget);
+                //set camera priority
                 break;
             case InteractType.npc:
                 StartCoroutine(NPCInteraction(player));
@@ -44,7 +46,7 @@ public class Interactable : MonoBehaviour, IInteractable
             GameplayManager.instance.dialogueUI.InitDialogue(dialogueObj, null, this);
     }
 
-    private void TeleportInteraction()
+    private void TeleportInteraction(TeleportTarget targetTeleport, int cameraValue = -1)
     {
         Debug.Log("teleport interaction");
         if (GameplayManager.instance.teleportSystem != null)
